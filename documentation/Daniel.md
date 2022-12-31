@@ -10,3 +10,4 @@
 #### 31.12.2022
 - 14:15 Setting up the project (Filestructure, database, documentation)
 - 14:24 Adding links to my documentation
+- 14:58 Simple setup of the Database Interface
