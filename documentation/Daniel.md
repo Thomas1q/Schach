@@ -2,7 +2,7 @@
 
 > - [Github](https://github.com/dpfurners)
 > - [Discord](https://discord.gg/user/GozZzer#1245)
-> - [Mail](mailto:danie.pfu@gmail.com)
+> - [Mail](mailto:dpfurner@tsn.at)
 
 ## Change-Log
 
