@@ -20,7 +20,3 @@ class HostClientSelector(LogicBase):
             LogicHost.from_selector(self)
         else:
             LogicClient.from_selector(self)
-
-
-
-

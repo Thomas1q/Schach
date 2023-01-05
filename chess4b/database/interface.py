@@ -12,17 +12,12 @@ class SqlInterface:
 
     async def setup(self) -> None:
         self._db = await aiosqlite.connect(self.db_file)
-        print(self._db)
         await self.tables_setup()
 
     async def tables_setup(self) -> None:
-        print("setup")
         await self.execute(CREATE_USER_TABLE)
-        print("user_table")
         await self.execute(CREATE_GAMES_TABLE)
-        print("games_table")
         await self.commit()
-        print("commit")
 
     async def get_user_data(self, username: str) -> User:
         data = await self.execute("SELECT * FROM users WHERE username=?", username)

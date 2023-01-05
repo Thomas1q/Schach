@@ -6,7 +6,7 @@ from chess4b.models import User, Game
 
 
 class LogicHost(LogicBase):
-    def __init__(self, loop: asyncio.events.AbstractEventLoop, username: str, auto_setup: bool = True):
+    def __init__(self, loop: asyncio.events.AbstractEventLoop, username: str):
         super().__init__(loop, False, False)
 
         self._host_server: asyncio.AbstractServer | None = None
@@ -15,8 +15,7 @@ class LogicHost(LogicBase):
         self.user_data: User | None = None
         self.enemy_data: User | None = None
 
-        if auto_setup:
-            self.setup(username)
+        self.setup(username)
 
         self.screen: pygame.Surface | None = None
         self.event_queue: asyncio.Queue = asyncio.Queue()
