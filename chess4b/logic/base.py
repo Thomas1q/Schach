@@ -6,6 +6,8 @@ class LogicBase:
     def __init__(self, loop: asyncio.events.AbstractEventLoop = None, auto_start: bool = True):
         self.connection: socket.socket | None = None
         self.loop: asyncio.events.AbstractEventLoop = loop
+        self.user_data: dict = {}
+        self.enemy_data: dict = {}
         if auto_start:
             self._start()
 
