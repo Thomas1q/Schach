@@ -1,22 +1,44 @@
-import asyncio
+import pygame
 
-from chess4b.logic import LogicBase, LogicHost, LogicClient
-from chess4b.ui import LoginPage
+from chess4b.logic import BaseLogic
+from chess4b.logic.host import HostLogic
+from chess4b.logic.client import ClientLogic
+
+from chess4b.ui.utils import username_input
 
 
-class HostClientSelector(LogicBase):
-    def __init__(self, loop: asyncio.events.AbstractEventLoop = None, auto_start: bool = True, auto_run: bool = True):
-        self.username: str | None = None
+class HostClientSelector(BaseLogic):
+    def __init__(self, auto_setup: bool = True):
+        self.clock = None
 
-        super().__init__(loop, auto_start, auto_run)
-        self.loop.call_soon_threadsafe(self.login)
+        super().__init__(auto_setup=auto_setup)
 
-    async def login(self):
-        lp = LoginPage()
-        self.username = await lp.get_login()
+        if auto_setup:
+            self.setup()
 
-        host = await lp.check_host()
+    def setup(self) -> None:
+        """
+        Initialize pygame, set a caption, get the clock and enable key repeat
+
+        Returns
+        -------
+        None
+        """
+        pygame.init()
+
+        self.clock = pygame.time.Clock()
+
+        self.screen = pygame.display.set_mode((1000, 700))
+        pygame.display.set_caption("Schach")
+        # Pygame now allows natively to enable key repeat:
+        pygame.key.set_repeat(200, 25)
+
+    def start_game_loop(self) -> None:
+        username, host = username_input(self.screen, self.clock)
         if host:
-            LogicHost.from_selector(self)
+            log = HostLogic.from_selector(self, username)
+
         else:
-            LogicClient.from_selector(self)
+            log = ClientLogic.from_selector(self, username)
+
+        log.start_game_loop()
