@@ -2,6 +2,7 @@ import aiosqlite
 import asyncio
 
 from chess4b.database.statements import CREATE_USER_TABLE, CREATE_GAMES_TABLE
+from chess4b.models import User, Game
 
 
 class SqlInterface:
@@ -23,8 +24,12 @@ class SqlInterface:
         await self.commit()
         print("commit")
 
-    async def execute(self, sql: str) -> aiosqlite.Cursor:
-        return await self._db.execute(sql)
+    async def get_user_data(self, username: str) -> User:
+        data = await self.execute("SELECT * FROM users WHERE username=?", username)
+        return User(*await data.fetchone())
+
+    async def execute(self, sql: str, *dta) -> aiosqlite.Cursor:
+        return await self._db.execute(sql, *dta)
 
     async def commit(self) -> None:
         await self._db.commit()
