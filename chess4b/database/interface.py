@@ -1,34 +1,40 @@
-import sqlite3
+import aiosqlite
+import asyncio
 
 from chess4b.database.statements import CREATE_USER_TABLE, CREATE_GAMES_TABLE
 
 
 class SqlInterface:
-    def __init__(self, db_file: str = "database.sqlite", auto_setup: bool = True):
-        self.db: sqlite3.Connection | None = None
+    def __init__(self, db_file: str = "database.sqlite"):
+        self._db: aiosqlite.Connection | None = None
         self.db_file: str = db_file
-        if auto_setup:
-            self.setup()
 
-    def setup(self) -> None:
-        self.db = sqlite3.connect(self.db_file)
-        self.tables_setup()
+    async def setup(self) -> None:
+        self._db = await aiosqlite.connect(self.db_file)
+        print(self._db)
+        await self.tables_setup()
 
-    def tables_setup(self) -> None:
-        self.execute(CREATE_USER_TABLE)
-        self.execute(CREATE_GAMES_TABLE)
-        self.commit()
+    async def tables_setup(self) -> None:
+        print("setup")
+        await self.execute(CREATE_USER_TABLE)
+        print("user_table")
+        await self.execute(CREATE_GAMES_TABLE)
+        print("games_table")
+        await self.commit()
+        print("commit")
 
-    def execute(self, sql: str) -> sqlite3.Cursor:
-        return self.db.execute(sql)
+    async def execute(self, sql: str) -> aiosqlite.Cursor:
+        return await self._db.execute(sql)
 
-    def commit(self) -> None:
-        self.db.commit()
+    async def commit(self) -> None:
+        await self._db.commit()
 
-    def close(self) -> None:
-        self.commit()
-        self.db.close()
+    async def close(self) -> None:
+        await self.commit()
+        await self._db.close()
 
 
 if __name__ == '__main__':
     intf = SqlInterface()
+    loop = asyncio.new_event_loop()
+    loop.run_until_complete(intf.setup())
