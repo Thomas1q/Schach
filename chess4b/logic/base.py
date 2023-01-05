@@ -52,6 +52,14 @@ class LogicBase:
             if event.type == pygame.QUIT:
                 break
 
+    @classmethod
+    def from_selector(cls, obj):
+        """
+        Method to create a Class when finished with the HostClientSelector
+        :return:
+        """
+        ...
+
 
 if __name__ == '__main__':
     lb = LogicBase()
