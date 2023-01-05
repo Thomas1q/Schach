@@ -1,4 +1,5 @@
 import socket
+import pygame
 import asyncio
 
 
@@ -8,6 +9,7 @@ class LogicBase:
         self.loop: asyncio.events.AbstractEventLoop = loop
         self.user_data: dict = {}
         self.enemy_data: dict = {}
+        self.screen: pygame.Surface | None = None
         if auto_start:
             self._start()
 
