@@ -55,7 +55,6 @@ class LogicGame(LogicBase):
         event_task = asyncio.ensure_future(self.handle_events(), loop=self.loop)
 
         pygame.init()
-
         try:
             self.loop.run_forever()
         except KeyboardInterrupt:
