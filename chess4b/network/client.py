@@ -10,10 +10,17 @@ class Client:
 
     def client_connect(self):
         self.client_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client_conn.connect(self.address)
+        try:
+            self.client_conn.connect(self.address)
+            return True
+        except ConnectionRefusedError:
+            return False
 
-    def write(self):
-        self.client_conn.send("Hello".encode())
+    def write(self, message: bytes):
+        self.client_conn.send(message)
+
+    def recv(self):
+        return self.client_conn.recv(1024)
 
 
 if __name__ == '__main__':

@@ -10,7 +10,7 @@ class SqlInterface:
         self._db: sqlite3.Connection | None = None
         self.db_file: str = db_file
 
-    def setup(self) -> None:
+    def setup(self, tables: bool = True) -> None:
         self._db = sqlite3.connect(self.db_file)
         self.tables_setup()
 

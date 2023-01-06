@@ -1,22 +1,25 @@
 import socket
-from network import Client
+from chess4b.network import Client
 
 
 class Server(Client):
     def __init__(self):
         super().__init__()
         self.server = None
+        self.conn = None
+        self.addr = None
 
     def start_server(self):
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind(self.address)
         self.server.listen(1)
-        while True:
-            client_conn, client_addr = self.server.accept()
-            print(client_conn.recv(1024).decode())
+        self.conn, self.addr = self.server.accept()
 
-    def write(self):
-        self.client_conn.send("Kann spielfeld übertragen".encode())
+    def write(self, message: bytes):
+        self.conn.send(message)
+
+    def recv(self):
+        return self.conn.recv(1024)
 
 
 if __name__ == '__main__':

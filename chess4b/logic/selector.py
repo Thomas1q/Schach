@@ -34,11 +34,12 @@ class HostClientSelector(BaseLogic):
         pygame.key.set_repeat(200, 25)
 
     def start_game_loop(self) -> None:
-        username, host = username_input(self.screen, self.clock)
-        if host:
-            log = HostLogic.from_selector(self, username)
+        while True:
+            username, host = username_input(self.screen, self.clock)
+            if host:
+                log = HostLogic.from_selector(self, username)
 
-        else:
-            log = ClientLogic.from_selector(self, username)
+            else:
+                log = ClientLogic.from_selector(self, username)
 
-        log.start_game_loop()
+            log.start_game_loop()
