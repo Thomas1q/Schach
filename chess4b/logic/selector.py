@@ -28,7 +28,7 @@ class HostClientSelector(BaseLogic):
 
         self.clock = pygame.time.Clock()
 
-        self.screen = pygame.display.set_mode((1000, 700))
+        self.screen = pygame.display.set_mode((1000, 850))
         pygame.display.set_caption("Schach")
         # Pygame now allows natively to enable key repeat:
         pygame.key.set_repeat(200, 25)
