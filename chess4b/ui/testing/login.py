@@ -1,7 +1,7 @@
 import asyncio
 import pygame
 
-from chess4b.ui.utils import draw_text
+from chess4b.ui.testing.utils import draw_text
 
 
 class LoginPage:

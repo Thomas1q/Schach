@@ -115,11 +115,10 @@ class GameDisplay:
         return square
 
     def board_list(self, board: chess.Board):
-        if self.color:
+        if not self.color:
             return [row.split(" ") for row in str(board).split("\n")]
         else:
             rows = str(board).split("\n")
             rows.reverse()
-            cols = rows.split(" ")
-            cols.reverse()
+            cols = [row.split(" ") for row in rows]
             return cols

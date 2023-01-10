@@ -22,15 +22,15 @@ class GameLogic(BaseLogic):
             self.color: chess.Color = chess.WHITE
             self.board: chess.Board | None = chess.Board()
             self.game_display = GameDisplay(screen, self.color)
-            self.before_color: chess.Color = chess.WHITE
         else:
             self.color: chess.Color = chess.BLACK
             self.board: chess.Board | None = None
             self.game_display = GameDisplay(screen, self.color)
-            self.before_color: chess.Color = chess.BLACK
 
         self.selected: str | None = None
         self.move_to: str | None = None
+        self.just_moved: bool = False
+
 
         super().__init__(screen, clock)
 
@@ -43,21 +43,32 @@ class GameLogic(BaseLogic):
             events = pygame.event.get()
             self.screen.fill((255, 255, 255))
 
-            if self.board:
-                self.display_board()
+            self.display_board()
 
-                self.get_move(events)
+            self.get_move(events)
+
+            for event in events:
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
 
             pygame.display.update()
             self.clock.tick(60)
 
     def display_board(self):
-        if self.before_color != self.board.turn:
-            self.before_color = self.board.turn
-            if self.board.turn != self.color:
-                self.network.write(pickle.dumps(self.board))
+        if self.board.turn == self.color:
+            if self.just_moved:
+                self.just_moved = False
             else:
+                self.network.write(pickle.dumps(self.board))
+        else:
+            try:
                 self.board = pickle.loads(self.network.recv())
+            # Raises when an invalid data is received
+            except pickle.UnpicklingError:
+                pass
+            except UnicodeDecodeError:
+                pass
         self.game_display.show_board(self.board)
 
     def get_move(self, events: list[pygame.event.Event]):
@@ -94,7 +105,11 @@ class GameLogic(BaseLogic):
                                         move = chess.Move.from_uci(f"{self.selected}{self.move_to}")
                                         if self.board.is_legal(move):
                                             self.board.push(move)
+                                            self.selected = None
+                                            self.move_to = None
                                             print(move)
+                                            self.network.write(pickle.dumps(self.board))
+                                            self.just_moved = True
                                     else:
                                         move = chess.Move.from_uci(f"{self.selected}{field}")
                                         if self.board.is_legal(move):
@@ -103,8 +118,8 @@ class GameLogic(BaseLogic):
     def my_piece(self, field: str) -> bool:
         x, y = self.game_display.list_coords(field)
         board_list_field = self.game_display.board_list(self.board)[x][y]
-        print(board_list_field)
-        if (board_list_field.isupper() and self.color == chess.BLACK) or (board_list_field.islower() and self.color == chess.WHITE):
+        print("my", board_list_field)
+        if (board_list_field.islower() and self.color == chess.BLACK) or (board_list_field.isupper() and self.color == chess.WHITE):
             return True
         else:
             return False
@@ -112,6 +127,7 @@ class GameLogic(BaseLogic):
     def other_piece(self, field: str) -> bool:
         x, y = self.game_display.list_coords(field)
         board_list_field = self.game_display.board_list(self.board)[x][y]
+        print("other", board_list_field)
         if (board_list_field.isupper() and self.color == chess.WHITE) or (board_list_field.islower() and self.color == chess.BLACK):
             return True
         else:
@@ -124,9 +140,6 @@ class GameLogic(BaseLogic):
             return True
         else:
             return False
-
-
-
 
     @classmethod
     def from_client(cls, obj):
