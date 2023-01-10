@@ -1,7 +1,8 @@
-from .host import NetworkHost as Host
-from .client import NetworkClient as Client
+from .client import Client
+from .server import Server
 
 __all__ = [
-    "Host",
-    "Client"
+    "Client",
+    "Server"
 ]
+

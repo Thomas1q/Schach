@@ -1,34 +1,62 @@
-import asyncio
-from chess4b.logic import LogicBase, HostClientSelector
+import pygame
+import pickle
+import threading
+
+from chess4b.ui.loading import wait_for_client
+from chess4b.logic import BaseLogic
+from chess4b.logic.game import GameLogic
+from chess4b.models import User
 from chess4b.network import Server
 from chess4b.database import SqlInterface
-from chess4b.models import User, Game
 
 
-class LogicHost(LogicBase):
-    def __init__(self, loop: asyncio.events.AbstractEventLoop, username: str):
-        super().__init__(loop, False, False)
+class HostLogic(BaseLogic):
+    def __init__(self, username: str, screen: pygame.Surface = None, clock: pygame.time.Clock = None):
+        self._db_intf = SqlInterface()
+        self._db_intf.setup()
 
-        self._host_server: asyncio.AbstractServer | None = None
-        self._db_interface: SqlInterface = SqlInterface()
+        self.server: Server = Server()
 
-        self.user_data: User | None = None
+        self.user_data: User = self._db_intf.get_user_data(username)
         self.enemy_data: User | None = None
 
-        self.setup(username)
+        self.client_waiter = threading.Thread(target=self.wait_for_client)
+        self._db_intf.close()
+        super().__init__(screen, clock, False)
 
-        self.screen: pygame.Surface | None = None
-        self.event_queue: asyncio.Queue = asyncio.Queue()
+    def start_game_loop(self):
+        while True:
+            events = pygame.event.get()
 
-    def setup(self, username: str):
-        self.loop.call_soon(self.resolve_user_database, username)
+            wait_for_client(self.screen, self.clock)
 
-    async def resolve_user_database(self, user_name: str):
-        self.user_data = await self._db_interface.get_user_data(user_name)
+            try:
+                self.client_waiter.start()
+            except RuntimeError:
+                pass
 
-    async def resolve_enemy_database(self, enemy_name: str):
-        self.enemy_data = await self._db_interface.get_user_data(enemy_name)
+            if self.enemy_data:
+                pygame.time.wait(100)
+                log = GameLogic.from_host(self)
+                log.start_game_loop()
+
+            pygame.display.update()
+            self.clock.tick(60)
+
+    def wait_for_client(self):
+        self._db_intf = SqlInterface()
+        self._db_intf.setup(False)
+        self.server.start_server()
+        self.server.write(pickle.dumps(self.user_data))
+
+        self.enemy_data = self._db_intf.get_user_data(self.server.recv().decode())
+        self.server.write(pickle.dumps(self.enemy_data))
 
     @classmethod
-    def from_selector(cls, sel: HostClientSelector):
-        return cls(sel.loop, sel.username)
+    def from_selector(cls, obj, username):
+        return cls(
+            username,
+            obj.screen,
+            obj.clock
+        )
+
