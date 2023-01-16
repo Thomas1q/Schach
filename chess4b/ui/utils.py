@@ -1,6 +1,11 @@
 import pygame
 
 
+def draw_text(text, font, text_col, x, y):
+    img = font.render(text, True, text_col)
+    screen.blit(img, (x, y))
+
+
 def username_input(screen: pygame.Surface, clock: pygame.time.Clock, length: int = 10) -> tuple[str, bool]:
     """
     Function to resolve the Name of the Player and if the player wants to be Host or client
@@ -11,14 +16,8 @@ def username_input(screen: pygame.Surface, clock: pygame.time.Clock, length: int
     :return:
         str: The name of the Player
         bool: True -> Host, False -> Client
-        str: user_text
-        bool: Host_Client
     """
-
-    # game varibales
-    login_name = True
-    login_fin = False
-    host_client = None
+    max_len_name = 10
 
     # colors
     white = (255, 255, 255)
@@ -28,10 +27,7 @@ def username_input(screen: pygame.Surface, clock: pygame.time.Clock, length: int
     grey = (136, 136, 136)
     turquoise = (52, 78, 91)
 
-    color_active = pygame.Color('lightskyblue3')
-    color_passive = pygame.Color('grey')
-    color = color_passive
-    color2 = pygame.Color(black)
+    color = grey
     # Coordinates
     X = 450
     Y = 700
@@ -56,72 +52,68 @@ def username_input(screen: pygame.Surface, clock: pygame.time.Clock, length: int
     text4Rect.center = (X // 1.5, Y // 2)
     input_rect = pygame.Rect(170, 200, 140, 32)
     host_rect = pygame.Rect(122, 308, 50, 45)
+
     client_rect = pygame.Rect(242, 308, 63, 45)
 
-    # draw function
-    def draw_text(text, font, text_col, x, y):
-        img = font.render(text, True, text_col)
-        screen.blit(img, (x, y))
-
     active = False
+    click = False
     running = True
     while running:
-        print(host_client)
         # Did the user click the window close button?
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if input_rect.collidepoint(event.pos):
-                    active = True
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                click = True
+            elif event.type == pygame.MOUSEBUTTONUP:
+                click = False
 
-                else:
-                    active = False
-                if host_rect.collidepoint(event.pos):
-
-                    host_client = True
-                    return user_text, True
-
-
-                else:
-                    host_client = False
-                    return user_text, False
-
-
-            if event.type == pygame.KEYDOWN:
+            elif event.type == pygame.KEYDOWN:
 
                 # Check for backspace
                 if event.key == pygame.K_BACKSPACE:
 
                     # get text input from 0 to -1 i.e. end.
-                    user_text = user_text[:-1]
+                    if active:
+                        user_text = user_text[:-1]
 
                 # Unicode standard is used for string
                 # formation
                 else:
-                    user_text += event.unicode
+                    if active:
+                        if len(user_text) < max_len_name:
+                            user_text += event.unicode
+
+        mouse_pos = pygame.mouse.get_pos()
+        if input_rect.collidepoint(mouse_pos):
+            if click:
+                active = True
+                color = pygame.Color("lightskyblue3")
+        elif host_rect.collidepoint(mouse_pos):
+            if click:
+                if user_text:
+                    return user_text, True
+        elif client_rect.collidepoint(mouse_pos):
+            if click:
+                if user_text:
+                    return user_text, False
+        else:
+            if click:
+                if active:
+                    color = grey
 
         # Fill the background with white
-        screen.fill((turquoise))
-        pygame.draw.rect(screen, color2, host_rect)
-        pygame.draw.rect(screen, color2, client_rect)
+        screen.fill(turquoise)
         screen.blit(text, textRect)
         screen.blit(text2, text2Rect)
         screen.blit(text3, text3Rect)
         screen.blit(text4, text4Rect)
 
-        pygame.display.update()
-
-        if active:
-            color = color_active
-        else:
-            color = color_passive
-
-            # draw rectangle and argument passed which should
-            # be on screen
+        # draw rectangle and argument passed which should
+        # be on screen
         pygame.draw.rect(screen, color, input_rect)
 
-        text_surface = base_font.render(user_text, True, (255, 255, 255))
+        text_surface = base_font.render(user_text, True, white)
 
         # render at position stated in arguments
         screen.blit(text_surface, (input_rect.x + 5, input_rect.y + 0))
@@ -130,9 +122,8 @@ def username_input(screen: pygame.Surface, clock: pygame.time.Clock, length: int
         # outside of user's text input
         input_rect.w = max(100, text_surface.get_width() + 10)
 
-        # display.flip() will update only a portion of the
-        # screen to updated, not full area
-        pygame.display.flip()
+        # display.update() will update the display
+        pygame.display.update()
 
         # clock.tick(60) means that for every second at most
         # 60 frames should be passed.
