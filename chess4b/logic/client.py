@@ -41,6 +41,7 @@ class ClientLogic(BaseLogic):
 
     @classmethod
     def from_selector(cls, obj, username: str):
+        pygame.display.set_mode((1200, 800))
         return cls(
             username,
             obj.screen,

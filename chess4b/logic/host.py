@@ -1,3 +1,4 @@
+import sys
 import pygame
 import pickle
 import threading
@@ -39,6 +40,11 @@ class HostLogic(BaseLogic):
                 pygame.time.wait(100)
                 log = GameLogic.from_host(self)
                 log.start_game_loop()
+
+            for event in events:
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
 
             pygame.display.update()
             self.clock.tick(60)
