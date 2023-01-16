@@ -1,3 +1,4 @@
+import sys
 import pygame
 
 
@@ -62,7 +63,8 @@ def username_input(screen: pygame.Surface, clock: pygame.time.Clock, length: int
         # Did the user click the window close button?
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 click = True
             elif event.type == pygame.MOUSEBUTTONUP:
