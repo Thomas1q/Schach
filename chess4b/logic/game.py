@@ -31,7 +31,6 @@ class GameLogic(BaseLogic):
         self.move_to: str | None = None
         self.just_moved: bool = False
 
-
         super().__init__(screen, clock)
 
     def start_game_loop(self):
@@ -91,44 +90,34 @@ class GameLogic(BaseLogic):
                     click = False
 
             pointer = pygame.mouse.get_pos()
-            for row in self.game_display.squares:
-                for square in row:
-                    if square.rect.collidepoint(pointer):
-                        if click:
-                            field = square.name
-                            if self.my_piece(field):
-                                self.selected = field
-                                self.move_to = None
-                            if self.empty_field(field):
-                                if self.selected:
-                                    if self.move_to:
-                                        move = chess.Move.from_uci(f"{self.selected}{self.move_to}")
-                                        if self.board.is_legal(move):
-                                            self.board.push(move)
-                                            self.selected = None
-                                            self.move_to = None
-                                            print(move)
-                                            self.network.write(pickle.dumps(self.board))
-                                            self.just_moved = True
-                                    else:
-                                        move = chess.Move.from_uci(f"{self.selected}{field}")
-                                        if self.board.is_legal(move):
-                                            self.move_to = field
+            for square in self.game_display.squares:
+                if self.game_display.squares.get(square).collidepoint(pointer):
+                    if click:
+                        field = square.name
+                        print(field)
+                        if self.my_piece(field):
+                            self.selected = field
+                            self.move_to = None
+                        if self.empty_field(field):
+                            if self.selected:
+                                if self.move_to:
+                                    move = chess.Move.from_uci(f"{self.selected}{self.move_to}")
+                                    if self.board.is_legal(move):
+                                        self.board.push(move)
+                                        self.selected = None
+                                        self.move_to = None
+                                        self.network.write(pickle.dumps(self.board))
+                                        self.just_moved = True
+                                else:
+                                    move = chess.Move.from_uci(f"{self.selected}{field}")
+                                    if self.board.is_legal(move):
+                                        self.move_to = field
 
     def my_piece(self, field: str) -> bool:
         x, y = self.game_display.list_coords(field)
         board_list_field = self.game_display.board_list(self.board)[x][y]
         print("my", board_list_field)
         if (board_list_field.islower() and self.color == chess.BLACK) or (board_list_field.isupper() and self.color == chess.WHITE):
-            return True
-        else:
-            return False
-
-    def other_piece(self, field: str) -> bool:
-        x, y = self.game_display.list_coords(field)
-        board_list_field = self.game_display.board_list(self.board)[x][y]
-        print("other", board_list_field)
-        if (board_list_field.isupper() and self.color == chess.WHITE) or (board_list_field.islower() and self.color == chess.BLACK):
             return True
         else:
             return False
