@@ -91,14 +91,13 @@ class GameLogic(BaseLogic):
 
             pointer = pygame.mouse.get_pos()
             for square in self.game_display.squares:
-                if self.game_display.squares.get(square).collidepoint(pointer):
+                if self.game_display.squares.get(square)[0].collidepoint(pointer):
                     if click:
-                        field = square.name
-                        print(field)
-                        if self.my_piece(field):
-                            self.selected = field
+                        print(square)
+                        if self.my_piece(square):
+                            self.selected = square
                             self.move_to = None
-                        if self.empty_field(field):
+                        if self.empty_field(square):
                             if self.selected:
                                 if self.move_to:
                                     move = chess.Move.from_uci(f"{self.selected}{self.move_to}")
@@ -109,9 +108,9 @@ class GameLogic(BaseLogic):
                                         self.network.write(pickle.dumps(self.board))
                                         self.just_moved = True
                                 else:
-                                    move = chess.Move.from_uci(f"{self.selected}{field}")
+                                    move = chess.Move.from_uci(f"{self.selected}{square}")
                                     if self.board.is_legal(move):
-                                        self.move_to = field
+                                        self.move_to = square
 
     def my_piece(self, field: str) -> bool:
         x, y = self.game_display.list_coords(field)
