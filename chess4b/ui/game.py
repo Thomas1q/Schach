@@ -12,18 +12,12 @@ class GameDisplay:
         self.turquoise = (52, 78, 91)
 
         self.screen: pygame.Surface = screen
-        self.squares: dict={}
+        self.squares: dict = {}
 
-        self.display_field()
         self.setup_squares()
+        self.display_field()
 
     def setup_squares(self):
-
-
-
-
-
-
         # Create rects to be able to check if the mouse pointer collides with a field
         color_rect = 'white'
         color_rect_2 = 'black'
@@ -37,13 +31,9 @@ class GameDisplay:
 
                 else:
                     self.squares[f"{num}{char}"] = [a, color_rect_2]
-
-
-        pass
         print(self.squares)
 
     def display_field(self):
-
         # colors
         turquoise = (52, 78, 91)
         white = (255, 255, 255)
@@ -71,11 +61,10 @@ class GameDisplay:
                 x = (i * (-50)) + 900
                 self.screen.blit(img, (x, 50))
 
-
         # checks if field is even or odd | even = white | odd = black
 
         for square in self.squares:
-
+            pass
             pygame.draw.rect(self.screen, self.squares.get(square)[1], self.squares.get(square)[0])
 
         pass
@@ -83,9 +72,7 @@ class GameDisplay:
     def show_board(self, board: chess.Board):
         # Display the board onto the field
         # Also mark if it's the player turn
-
-
-
+        self.display_field()
         pass
 
     def highlight(self, field: str, color: tuple = (255, 165, 0)):
