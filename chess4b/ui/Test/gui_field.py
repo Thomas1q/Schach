@@ -74,6 +74,7 @@ while run:
     #checks if game has started
     if game_started == False:
         draw_text("PRESS BUTTON TO START", font, TEXT_COL, 475, 100)
+        draw_text("WAITING FOR SECOND PLAYER", font, TEXT_COL, 455, 500)
         if play_button.draw(screen):
             game_started = True
 
