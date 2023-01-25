@@ -31,7 +31,7 @@ class GameDisplay:
         var = "ABCDEFGH"
         for num in range(1, 9):
             for char in var:
-                a = pygame.Rect(200 + (var.index(char)) * 75, 100 + num * 75, 75, 75)
+                a = pygame.Rect(300 + (var.index(char)) * 75, 100 + num * 75, 75, 75)
                 if (num + (var.index(char))) % 2:
 
                     self.squares[f"{num}{char}"] = [a, color_rect]
@@ -55,24 +55,29 @@ class GameDisplay:
         self.screen.fill(turquoise)
 
 
-        pygame.draw.rect(self.screen, 'black', pygame.Rect(196, 171, 608, 608),4)
+        pygame.draw.rect(self.screen, 'black', pygame.Rect(296, 171, 608, 608),4)
 
         img = self.font.render("PRESS ESC TO PAUSE", True, self.text_col)
         self.screen.blit(img, (500, 750))
 
         # Display the playing field including the text
-        for i in range(1, 9):
-            if self.color:
-                text = 'ABCDEFGH'
 
-                img = self.font.render(text, True, self.text_col)
-                self.screen.blit(img, (i * 50 + 150, 50))
-            else:
-                text_r = 'HGFEDCBA'
+        text = 'ABCDEFGH'
+        text_r = 'HGFEDCBA'
+        counter = 0
+
+        if self.color:
+            for char in text:
+                img = self.font.render(char, True, self.text_col)
+                self.screen.blit(img, (counter * 75 + 325, 25))
+                counter = counter + 1
+        else:
+            for char in text_r:
 
                 img = self.font.render(text_r, True, self.text_col)
-                x = (i * (-50)) + 900
+                x = (text_r.index(char) * (-75)) + 900
                 self.screen.blit(img, (x, 50))
+                counter = counter + 1
 
         # checks if field is even or odd | even = white | odd = black
 
