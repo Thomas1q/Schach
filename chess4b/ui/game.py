@@ -10,6 +10,7 @@ class GameDisplay:
         self.color: chess.Color = color
         self.font = pygame.font.Font('AGENCYR.ttf', 32)
         self.text_col = 'white'
+        self.text_col_2 = (248, 239, 221)
         self.turquoise = (52, 78, 91)
 
         self.screen: pygame.Surface = screen
@@ -31,7 +32,7 @@ class GameDisplay:
         var = "ABCDEFGH"
         for num in range(1, 9):
             for char in var:
-                a = pygame.Rect(300 + (var.index(char)) * 75, 100 + num * 75, 75, 75)
+                a = pygame.Rect(300 + (var.index(char)) * 75, 50 + num * 75, 75, 75)
                 if (num + (var.index(char))) % 2:
 
                     self.squares[f"{num}{char}"] = [a, color_rect]
@@ -55,7 +56,7 @@ class GameDisplay:
         self.screen.fill(turquoise)
 
 
-        pygame.draw.rect(self.screen, 'black', pygame.Rect(296, 171, 608, 608),4)
+        pygame.draw.rect(self.screen, 'black', pygame.Rect(296, 121, 608, 608),4)
 
         img = self.font.render("PRESS ESC TO PAUSE", True, self.text_col)
         self.screen.blit(img, (500, 750))
@@ -64,20 +65,31 @@ class GameDisplay:
 
         text = 'ABCDEFGH'
         text_r = 'HGFEDCBA'
+        temp = '12345678'
+        temp_2 = '87654321'
+
         counter = 0
+        counter_2 = 0
 
         if self.color:
             for char in text:
-                img = self.font.render(char, True, self.text_col)
-                self.screen.blit(img, (counter * 75 + 325, 25))
+                img = self.font.render(char, True, self.text_col_2)
+                self.screen.blit(img, (counter * 75 + 330, 75))
                 counter = counter + 1
+
+            for number in temp:
+                img_2 = self.font.render(number, True, self.text_col_2)
+                self.screen.blit(img_2, (260, counter_2 * 75 + 140))
+                counter_2 = counter_2 + 1
         else:
             for char in text_r:
-
-                img = self.font.render(text_r, True, self.text_col)
-                x = (text_r.index(char) * (-75)) + 900
-                self.screen.blit(img, (x, 50))
+                img = self.font.render(char, True, self.text_col_2)
+                self.screen.blit(img, (counter * 75 + 330, 75))
                 counter = counter + 1
+            for number in temp_2:
+                img_2 = self.font.render(number, True, self.text_col_2)
+                self.screen.blit(img_2, (260, counter_2 * 75 + 140))
+                counter_2 = counter_2 + 1
 
         # checks if field is even or odd | even = white | odd = black
 
