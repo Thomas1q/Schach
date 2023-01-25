@@ -73,6 +73,9 @@ class GameDisplay:
 
         if self.color:
             for char in text:
+                text_w = "WHITES TURN"
+                text_img = self.font.render(text_w, True, self.text_col)
+                self.screen.blit(text_img, (545, 25))
                 img = self.font.render(char, True, self.text_col_2)
                 self.screen.blit(img, (counter * 75 + 330, 75))
                 counter = counter + 1
@@ -83,6 +86,9 @@ class GameDisplay:
                 counter_2 = counter_2 + 1
         else:
             for char in text_r:
+                text_w = "BLACKS TURN"
+                text_img = self.font.render(text_w, True, self.text_col)
+                self.screen.blit(text_img, (545, 25))
                 img = self.font.render(char, True, self.text_col_2)
                 self.screen.blit(img, (counter * 75 + 330, 75))
                 counter = counter + 1
@@ -117,7 +123,18 @@ class GameDisplay:
         white_knight = pygame.image.load("chess4b/ui/images/white_knight.png").convert_alpha()
         white_rook = pygame.image.load("chess4b/ui/images/white_rook.png").convert_alpha()
 
-        black_pawn_button = gui_buttons.Button(500, 200, black_pawn, 1)
+        black_pawn_buttons = []
+
+        for i in range(0, 8):
+
+            black_pawn_buttons.append(gui_buttons.Button(314 + i * 75, 207, black_pawn, 0.25))
+
+        white_pawn_buttons = []
+
+        for i in range(0, 8):
+
+            white_pawn_buttons.append(gui_buttons.Button(314 + i * 75, 582, white_pawn, 0.25))
+
         black_queen_button = gui_buttons.Button(125, 200, black_queen, 1)
         black_king_button = gui_buttons.Button(157, 400, black_king, 1)
         black_bishop_button = gui_buttons.Button(175, 500, black_bishop, 1)
@@ -131,9 +148,23 @@ class GameDisplay:
         white_knight_button = gui_buttons.Button(157, 400, white_knight, 1)
         white_rook_button = gui_buttons.Button(157, 400, white_rook, 1)
 
+        if self.color:
+
+            for btn in black_pawn_buttons:
+                btn.draw(self.screen)
+
+            for wtn in white_pawn_buttons:
+                wtn.draw(self.screen)
 
 
-        pass
+
+        else:
+
+
+
+
+
+            pass
 
     def highlight(self, field: str, color: tuple = (255, 165, 0)):
         # Highlight a field with an orange border
