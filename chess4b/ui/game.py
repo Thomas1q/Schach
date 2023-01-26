@@ -18,13 +18,24 @@ class GameDisplay:
 
         self.display_field()
         self.setup_squares()
+        self.black_pawn = pygame.image.load("chess4b/ui/images/black_pawn.png").convert_alpha()
+        self.black_queen = pygame.image.load("chess4b/ui/images/black_queen.png").convert_alpha()
+        self.black_king = pygame.image.load("chess4b/ui/images/black_king.png").convert_alpha()
+        self.black_bishop = pygame.image.load("chess4b/ui/images/black_bishop.png").convert_alpha()
+        self.black_knight = pygame.image.load("chess4b/ui/images/black_knight.png").convert_alpha()
+        self.black_rook = pygame.image.load("chess4b/ui/images/black_rook.png").convert_alpha()
+
+        self.white_pawn = pygame.image.load("chess4b/ui/images/white_pawn.png").convert_alpha()
+        self.white_queen = pygame.image.load("chess4b/ui/images/white_queen.png").convert_alpha()
+        self.white_king = pygame.image.load("chess4b/ui/images/white_king.png").convert_alpha()
+        self.white_bishop = pygame.image.load("chess4b/ui/images/white_bishop.png").convert_alpha()
+        self.white_knight = pygame.image.load("chess4b/ui/images/white_knight.png").convert_alpha()
+        self.white_rook = pygame.image.load("chess4b/ui/images/white_rook.png").convert_alpha()
+
+        self.black_pawn_buttons = []
+        self.white_pawn_buttons = []
 
     def setup_squares(self):
-
-
-
-
-
 
         # Create rects to be able to check if the mouse pointer collides with a field
         color_rect = (248, 239, 221)
@@ -109,51 +120,39 @@ class GameDisplay:
         # Display the board onto the field
         # Also mark if it's the player turn
         self.display_field()
-        black_pawn = pygame.image.load("chess4b/ui/images/black_pawn.png").convert_alpha()
-        black_queen = pygame.image.load("chess4b/ui/images/black_queen.png").convert_alpha()
-        black_king = pygame.image.load("chess4b/ui/images/black_king.png").convert_alpha()
-        black_bishop = pygame.image.load("chess4b/ui/images/black_bishop.png").convert_alpha()
-        black_knight = pygame.image.load("chess4b/ui/images/black_knight.png").convert_alpha()
-        black_rook = pygame.image.load("chess4b/ui/images/black_rook.png").convert_alpha()
 
-        white_pawn = pygame.image.load("chess4b/ui/images/white_pawn.png").convert_alpha()
-        white_queen = pygame.image.load("chess4b/ui/images/white_queen.png").convert_alpha()
-        white_king = pygame.image.load("chess4b/ui/images/white_king.png").convert_alpha()
-        white_bishop = pygame.image.load("chess4b/ui/images/white_bishop.png").convert_alpha()
-        white_knight = pygame.image.load("chess4b/ui/images/white_knight.png").convert_alpha()
-        white_rook = pygame.image.load("chess4b/ui/images/white_rook.png").convert_alpha()
-
-        black_pawn_buttons = []
 
         for i in range(0, 8):
 
-            black_pawn_buttons.append(gui_buttons.Button(314 + i * 75, 207, black_pawn, 0.25))
+            self.black_pawn_buttons.append(gui_buttons.Button(314 + i * 75, 207, self.black_pawn, 0.25))
 
-        white_pawn_buttons = []
+
 
         for i in range(0, 8):
 
-            white_pawn_buttons.append(gui_buttons.Button(314 + i * 75, 582, white_pawn, 0.25))
+            self.white_pawn_buttons.append(gui_buttons.Button(314 + i * 75, 582, self.white_pawn, 0.25))
 
-        black_queen_button = gui_buttons.Button(125, 200, black_queen, 1)
-        black_king_button = gui_buttons.Button(157, 400, black_king, 1)
-        black_bishop_button = gui_buttons.Button(175, 500, black_bishop, 1)
-        black_knight_button = gui_buttons.Button(157, 400, black_knight, 1)
-        black_rook_button = gui_buttons.Button(157, 400, black_rook, 1)
+        black_queen_button = gui_buttons.Button(125, 200, self.black_queen, 1)
+        black_king_button = gui_buttons.Button(157, 400, self.black_king, 1)
+        black_bishop_button = gui_buttons.Button(175, 500, self.black_bishop, 1)
+        black_knight_button = gui_buttons.Button(157, 400, self.black_knight, 1)
+        black_rook_button = gui_buttons.Button(157, 400, self.black_rook, 1)
 
-        white_pawn_button = gui_buttons.Button(500, 200, white_pawn, 1)
-        white_queen_button = gui_buttons.Button(125, 200, white_queen, 1)
-        white_king_button = gui_buttons.Button(157, 400, white_king, 1)
-        white_bishop_button = gui_buttons.Button(175, 500, white_bishop, 1)
-        white_knight_button = gui_buttons.Button(157, 400, white_knight, 1)
-        white_rook_button = gui_buttons.Button(157, 400, white_rook, 1)
+        white_pawn_button = gui_buttons.Button(500, 200, self.white_pawn, 1)
+        white_queen_button = gui_buttons.Button(125, 200, self.white_queen, 1)
+        white_king_button = gui_buttons.Button(157, 400, self.white_king, 1)
+        white_bishop_button = gui_buttons.Button(175, 500, self.white_bishop, 1)
+        white_knight_button = gui_buttons.Button(157, 400, self.white_knight, 1)
+        white_rook_button = gui_buttons.Button(157, 400, self.white_rook, 1)
 
         if self.color:
 
-            for btn in black_pawn_buttons:
+            board.pieces(2, True)
+
+            for btn in self.black_pawn_buttons:
                 btn.draw(self.screen)
 
-            for wtn in white_pawn_buttons:
+            for wtn in self.white_pawn_buttons:
                 wtn.draw(self.screen)
 
 

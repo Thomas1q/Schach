@@ -14,6 +14,7 @@ class Client:
             self.client_conn.connect(self.address)
             return True
         except ConnectionRefusedError:
+            print("HOST HAS TO BE SELECTED FIRST")
             return False
 
     def write(self, message: bytes):
