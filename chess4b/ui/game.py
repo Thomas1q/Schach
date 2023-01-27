@@ -23,17 +23,16 @@ class GameDisplay:
 
         # Create rects to be able to check if the mouse pointer collides with a field
 
+        color_rect = (248, 239, 221)
+        color_rect_2 = (95, 59, 47)
+
         if self.color:
 
-            color_rect = (248, 239, 221)
-            color_rect_2 = (95, 59, 47)
             var = "abcdefgh"
             rng = range(1, 9)
 
         else:
 
-            color_rect_2 = (248, 239, 221)
-            color_rect = (95, 59, 47)
             var = "hgfedcba"
             rng = range(8, 0, -1)
 
@@ -122,6 +121,22 @@ class GameDisplay:
         white_knight = pygame.image.load("chess4b/ui/images/white_knight.png").convert_alpha()
         white_rook = pygame.image.load("chess4b/ui/images/white_rook.png").convert_alpha()
 
+        size = (60, 60)
+
+        black_pawn = pygame.transform.scale(black_pawn, size)
+        black_queen = pygame.transform.scale(black_queen, size)
+        black_king = pygame.transform.scale(black_king, size)
+        black_bishop = pygame.transform.scale(black_bishop, size)
+        black_knight = pygame.transform.scale(black_knight, size)
+        black_rook = pygame.transform.scale(black_rook, size)
+
+        white_pawn = pygame.transform.scale(white_pawn, size)
+        white_queen = pygame.transform.scale(white_queen, size)
+        white_king = pygame.transform.scale(white_king, size)
+        white_bishop = pygame.transform.scale(white_bishop, size)
+        white_knight = pygame.transform.scale(white_knight, size)
+        white_rook = pygame.transform.scale(white_rook, size)
+
         """""""""
         black_pawn_button = gui_buttons.Button(500, 200, black_pawn, 1)
         black_queen_button = gui_buttons.Button(125, 200, black_queen, 1)
@@ -143,70 +158,73 @@ class GameDisplay:
 
             command = board.piece_at(square)
             if command:
-                if self.color:
-                    match command:
+                if command.color:
+                    match chess.piece_symbol(command.piece_type):
 
-                        case chess.PAWN:
+                        case 'p':
 
-                            white_pawn.blit(self.screen, self.squares.get(names)[0].topleft)
+                            self.screen.blit(white_pawn, tuple(map(lambda x: x+7.5, list(self.squares.get(names)[0].topleft))))
 
-                        case chess.QUEEN:
+                        case 'q':
 
-                            white_queen.blit(self.screen, self.squares.get(names)[0].topleft)
+                            self.screen.blit(white_queen, tuple(map(lambda x: x+7.5, list(self.squares.get(names)[0].topleft))))
 
-                        case chess.KING:
+                        case 'k':
 
-                            white_king.blit(self.screen, self.squares.get(names)[0].topleft)
+                            self.screen.blit(white_king, tuple(map(lambda x: x+7.5, list(self.squares.get(names)[0].topleft))))
 
-                        case chess.BISHOP:
+                        case 'b':
 
-                            white_bishop.blit(self.screen, self.squares.get(names)[0].topleft)
+                            self.screen.blit(white_bishop, tuple(map(lambda x: x+7.5, list(self.squares.get(names)[0].topleft))))
 
-                        case chess.KNIGHT:
+                        case 'n':
 
-                            white_knight.blit(self.screen, self.squares.get(names)[0].topleft)
+                            self.screen.blit(white_knight, tuple(map(lambda x: x+7.5, list(self.squares.get(names)[0].topleft))))
 
-                        case chess.ROOK:
+                        case 'r':
 
-                            white_rook.blit(self.screen, self.squares.get(names)[0].topleft)
+                            self.screen.blit(white_rook, tuple(map(lambda x: x+7.5, list(self.squares.get(names)[0].topleft))))
 
                 else:
 
-                    match command:
+                    match chess.piece_symbol(command.piece_type):
 
-                        case chess.PAWN:
+                        case 'p':
 
-                            black_pawn.blit(self.screen, self.squares.get(names)[0].topleft)
+                            self.screen.blit(black_pawn, tuple(map(lambda x: x+7.5, list(self.squares.get(names)[0].topleft))))
 
-                        case chess.QUEEN:
+                        case 'q':
 
-                            black_queen.blit(self.screen, self.squares.get(names)[0].topleft)
+                            self.screen.blit(black_queen, tuple(map(lambda x: x+7.5, list(self.squares.get(names)[0].topleft))))
 
-                        case chess.KING:
+                        case 'k':
 
-                            black_king.blit(self.screen, self.squares.get(names)[0].topleft)
+                            self.screen.blit(black_king, tuple(map(lambda x: x+7.5, list(self.squares.get(names)[0].topleft))))
 
-                        case chess.BISHOP:
+                        case 'b':
 
-                            black_bishop.blit(self.screen, self.squares.get(names)[0].topleft)
+                            self.screen.blit(black_bishop, tuple(map(lambda x: x+7.5, list(self.squares.get(names)[0].topleft))))
 
-                        case chess.KNIGHT:
+                        case 'n':
 
-                            black_knight.blit(self.screen, self.squares.get(names)[0].topleft)
+                            self.screen.blit(black_knight, tuple(map(lambda x: x+7.5, list(self.squares.get(names)[0].topleft))))
 
-                        case chess.ROOK:
+                        case 'r':
 
-                            black_rook.blit(self.screen, self.squares.get(names)[0].topleft)
+                            self.screen.blit(black_rook, tuple(map(lambda x: x+7.5, list(self.squares.get(names)[0].topleft))))
 
         pass
 
-    def highlight(self, field: str, color: tuple = (52, 78, 91)):
+    def highlight(self, field: str, color: tuple = (217, 134, 58)):
         # Highlight a field with an orange border
         rect_h = self.squares.get(field)[0]
-        b = pygame.draw.rect(self.screen, color, rect_h, 2)
+        pygame.draw.rect(self.screen, color, rect_h, 4)
 
         pass
 
-    def arrow(self, start: str, end: str, color: tuple = (255, 165, 0)):
+    def arrow(self, start: str, end: str, color: tuple = (217, 134, 58)):
         # Draw a line from one field to another
+        rect_as = self.squares.get(start)[0].center
+        rect_ae = self.squares.get(end)[0].center
+        pygame.draw.line(self.screen, color, rect_as, rect_ae, 4)
         pass
