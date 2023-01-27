@@ -1,6 +1,8 @@
 import pygame
 import chess4b.ui.gui_buttons as gui_buttons
 
+from chess4b.logic.game import GameLogic
+
 
 def draw_text(text, font, text_col, x, y, screen):
     img = font.render(text, True, text_col)
@@ -41,3 +43,16 @@ def wait_for_client(screen: pygame.Surface, clock: pygame.time.Clock) -> None:
     draw_text("WAITING FOR SECOND PLAYER", font, TEXT_COL, 455, 500, screen)
 
     pass
+
+
+def wait_for_decision(
+        screen: pygame.Surface,
+        clock: pygame.time.Clock,
+        game: GameLogic,
+        events: list[pygame.event.Event],
+        other_decision: bool | None) -> bool | None:
+    # Wait for the player to decide if he wants to play again or wait for another player.
+    # True -> play again
+    # False -> wait for another player
+    # Other decision is the decision of the other player
+    return True
