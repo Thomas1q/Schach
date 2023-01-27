@@ -69,8 +69,8 @@ class GameDisplay:
 
         text = 'ABCDEFGH'
         text_r = 'HGFEDCBA'
-        temp = '12345678'
-        temp_2 = '87654321'
+        temp_2 = '12345678'
+        temp = '87654321'
 
         counter = 0
         counter_2 = 0
