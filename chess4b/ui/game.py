@@ -228,3 +228,8 @@ class GameDisplay:
         rect_ae = self.squares.get(end)[0].center
         pygame.draw.line(self.screen, color, rect_as, rect_ae, 4)
         pass
+
+    def show_check(self, field: str, checker: list[str]):
+        # Display if you are in check and the position of your king
+        # Show the fields of the checkers
+        pass
