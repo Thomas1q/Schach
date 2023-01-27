@@ -21,25 +21,30 @@ class GameDisplay:
 
     def setup_squares(self):
 
-
-
-
-
-
         # Create rects to be able to check if the mouse pointer collides with a field
-        color_rect = (248, 239, 221)
-        color_rect_2 = (95, 59, 47)
-        var = "ABCDEFGH"
-        for num in range(1, 9):
+
+        if self.color:
+
+            color_rect = (248, 239, 221)
+            color_rect_2 = (95, 59, 47)
+            var = "ABCDEFGH"
+            rng = range(1, 9)
+
+        else:
+
+            color_rect_2 = (248, 239, 221)
+            color_rect = (95, 59, 47)
+            var = "HGFEDCBA"
+            rng = range(8, 0, -1)
+
+        for num in rng:
             for char in var:
                 a = pygame.Rect(300 + (var.index(char)) * 75, 50 + num * 75, 75, 75)
                 if (num + (var.index(char))) % 2:
 
                     self.squares[f"{num}{char}"] = [a, color_rect]
-
                 else:
                     self.squares[f"{num}{char}"] = [a, color_rect_2]
-
 
         pass
         print(self.squares)
@@ -117,6 +122,7 @@ class GameDisplay:
         white_knight = pygame.image.load("chess4b/ui/images/white_knight.png").convert_alpha()
         white_rook = pygame.image.load("chess4b/ui/images/white_rook.png").convert_alpha()
 
+        """""""""
         black_pawn_button = gui_buttons.Button(500, 200, black_pawn, 1)
         black_queen_button = gui_buttons.Button(125, 200, black_queen, 1)
         black_king_button = gui_buttons.Button(157, 400, black_king, 1)
@@ -130,8 +136,67 @@ class GameDisplay:
         white_bishop_button = gui_buttons.Button(175, 500, white_bishop, 1)
         white_knight_button = gui_buttons.Button(157, 400, white_knight, 1)
         white_rook_button = gui_buttons.Button(157, 400, white_rook, 1)
+        """""""""
 
+        for square, names in zip(chess.SQUARES, chess.SQUARE_NAMES):
+            #print(names, board.piece_at(square))
 
+            command = board.piece_at(square)
+            if command:
+                if self.color:
+                    match command:
+
+                        case chess.PAWN:
+
+                            white_pawn.blit(self.screen, self.squares.get(names)[0].topleft)
+
+                        case chess.QUEEN:
+
+                            white_queen.blit(self.screen, self.squares.get(names)[0].topleft)
+
+                        case chess.KING:
+
+                            white_king.blit(self.screen, self.squares.get(names)[0].topleft)
+
+                        case chess.BISHOP:
+
+                            white_bishop.blit(self.screen, self.squares.get(names)[0].topleft)
+
+                        case chess.KNIGHT:
+
+                            white_knight.blit(self.screen, self.squares.get(names)[0].topleft)
+
+                        case chess.ROOK:
+
+                            white_rook.blit(self.screen, self.squares.get(names)[0].topleft)
+
+                else:
+
+                    match command:
+
+                        case chess.PAWN:
+
+                            black_pawn.blit(self.screen, self.squares.get(names)[0].topleft)
+
+                        case chess.QUEEN:
+
+                            black_queen.blit(self.screen, self.squares.get(names)[0].topleft)
+
+                        case chess.KING:
+
+                            black_king.blit(self.screen, self.squares.get(names)[0].topleft)
+
+                        case chess.BISHOP:
+
+                            black_bishop.blit(self.screen, self.squares.get(names)[0].topleft)
+
+                        case chess.KNIGHT:
+
+                            black_knight.blit(self.screen, self.squares.get(names)[0].topleft)
+
+                        case chess.ROOK:
+
+                            black_rook.blit(self.screen, self.squares.get(names)[0].topleft)
 
         pass
 
