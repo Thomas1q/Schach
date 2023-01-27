@@ -27,14 +27,14 @@ class GameDisplay:
 
             color_rect = (248, 239, 221)
             color_rect_2 = (95, 59, 47)
-            var = "ABCDEFGH"
+            var = "abcdefgh"
             rng = range(1, 9)
 
         else:
 
             color_rect_2 = (248, 239, 221)
             color_rect = (95, 59, 47)
-            var = "HGFEDCBA"
+            var = "hgfedcba"
             rng = range(8, 0, -1)
 
         for num in rng:
@@ -42,9 +42,9 @@ class GameDisplay:
                 a = pygame.Rect(300 + (var.index(char)) * 75, 50 + num * 75, 75, 75)
                 if (num + (var.index(char))) % 2:
 
-                    self.squares[f"{num}{char}"] = [a, color_rect]
+                    self.squares[f"{char}{num}"] = [a, color_rect]
                 else:
-                    self.squares[f"{num}{char}"] = [a, color_rect_2]
+                    self.squares[f"{char}{num}"] = [a, color_rect_2]
 
         pass
         print(self.squares)
@@ -138,7 +138,7 @@ class GameDisplay:
         white_rook_button = gui_buttons.Button(157, 400, white_rook, 1)
         """""""""
 
-        for square, names in zip(chess.SQUARES, list(map(lambda x: x.upper(), chess.SQUARE_NAMES))):
+        for square, names in zip(chess.SQUARES, chess.SQUARE_NAMES):
             #print(names, board.piece_at(square))
 
             command = board.piece_at(square)
@@ -202,6 +202,9 @@ class GameDisplay:
 
     def highlight(self, field: str, color: tuple = (52, 78, 91)):
         # Highlight a field with an orange border
+        if chess.SQUARE_NAMES == field:
+            rect_h = pygame.rect(x y, 75, 75)
+            b = pygame.draw.rect(rect_h, color,,,2)
 
         pass
 
