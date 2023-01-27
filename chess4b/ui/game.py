@@ -138,7 +138,7 @@ class GameDisplay:
         white_rook_button = gui_buttons.Button(157, 400, white_rook, 1)
         """""""""
 
-        for square, names in zip(chess.SQUARES, chess.SQUARE_NAMES):
+        for square, names in zip(chess.SQUARES, list(map(lambda x: x.upper(), chess.SQUARE_NAMES))):
             #print(names, board.piece_at(square))
 
             command = board.piece_at(square)
@@ -200,8 +200,9 @@ class GameDisplay:
 
         pass
 
-    def highlight(self, field: str, color: tuple = (255, 165, 0)):
+    def highlight(self, field: str, color: tuple = (52, 78, 91)):
         # Highlight a field with an orange border
+
         pass
 
     def arrow(self, start: str, end: str, color: tuple = (255, 165, 0)):
