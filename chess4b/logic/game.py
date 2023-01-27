@@ -2,7 +2,6 @@ import sys
 import pickle
 import chess
 import pygame
-from datetime import datetime
 
 from chess4b.logic import BaseLogic
 from chess4b.models import User
@@ -109,14 +108,15 @@ class GameLogic(BaseLogic):
                         if self.empty_field(square):
                             if self.selected:
                                 if self.move_to:
-                                    move = chess.Move.from_uci(f"{self.selected}{self.move_to}")
-                                    if self.board.is_legal(move):
-                                        self.board.push(move)
-                                        self.selected = None
-                                        self.move_to = None
-                                        # self.network.write(pickle.dumps(self.board))
-                                        self.just_moved = True
-                                        print(f"moved, waiting for enemy")
+                                    if square == self.move_to:
+                                        move = chess.Move.from_uci(f"{self.selected}{self.move_to}")
+                                        if self.board.is_legal(move):
+                                            self.board.push(move)
+                                            self.selected = None
+                                            self.move_to = None
+                                            # self.network.write(pickle.dumps(self.board))
+                                            self.just_moved = True
+                                            print(f"moved, waiting for enemy")
                                 else:
                                     move = chess.Move.from_uci(f"{self.selected}{square}")
                                     if self.board.is_legal(move):
@@ -124,12 +124,13 @@ class GameLogic(BaseLogic):
                         elif self.other_piece(square):
                             if self.selected:
                                 if self.move_to:
-                                    move = chess.Move.from_uci(f"{self.selected}{square}")
-                                    if self.board.is_legal(move):
-                                        self.board.push(move)
-                                        self.selected = None
-                                        self.move_to = None
-                                        self.just_moved = True
+                                    if square == self.move_to:
+                                        move = chess.Move.from_uci(f"{self.selected}{square}")
+                                        if self.board.is_legal(move):
+                                            self.board.push(move)
+                                            self.selected = None
+                                            self.move_to = None
+                                            self.just_moved = True
                                 else:
                                     move = chess.Move.from_uci(f"{self.selected}{square}")
                                     if self.board.is_legal(move):
