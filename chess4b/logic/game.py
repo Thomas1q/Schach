@@ -31,6 +31,8 @@ class GameLogic(BaseLogic):
         self.move_to: str | None = None
         self.just_moved: bool = False
 
+        self.finished: bool = False
+
         super().__init__(screen, clock)
 
     def start_game_loop(self):
@@ -44,6 +46,8 @@ class GameLogic(BaseLogic):
 
             self.display_board()
 
+            if self.finished:
+                return
             self.get_move(events)
 
             for event in events:
@@ -81,6 +85,11 @@ class GameLogic(BaseLogic):
 
     def get_move(self, events: list[pygame.event.Event]):
         click = False
+        if self.board.legal_moves.count() == 0:
+            print("END")
+            self.finished = True
+            return
+
         if self.board.turn == self.color:
             if self.selected:
                 self.game_display.highlight(self.selected)
@@ -90,8 +99,8 @@ class GameLogic(BaseLogic):
                 self.game_display.arrow(self.selected, self.move_to)
             if self.board.is_check():
                 self.game_display.show_check(
-                    chess.SQUARE_NAMES.index(self.board.king(self.color)),
-                    [chess.SQUARE_NAMES.index(square) for square in self.board.checkers()]
+                    list(self.game_display.squares)[self.board.king(self.color)],
+                    [list(self.game_display.squares)[square] for square in self.board.checkers()]
                 )
 
             for event in events:

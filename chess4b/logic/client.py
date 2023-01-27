@@ -1,11 +1,13 @@
 import sys
 import pygame
 import pickle
+import threading
 
 from chess4b.logic import BaseLogic
 from chess4b.logic.game import GameLogic
 from chess4b.network import Client
 from chess4b.database import SqlInterface
+from chess4b.ui.loading import wait_for_decision
 
 
 class ClientLogic(BaseLogic):
@@ -13,18 +15,61 @@ class ClientLogic(BaseLogic):
         self.username = username
 
         self.client: Client = Client()
+        self.log: GameLogic | None = None
 
         self.user_data: User | None = None
         self.enemy_data: User | None = None
+
+        self.decision_waiter: threading.Thread | None = None
+
+        self.decision: bool | None = None
+        self.other_decision: bool | None = None
+
+        self.already: bool = False
 
         super().__init__(screen, clock, False)
 
     def start_game_loop(self):
         while True:
-            event = pygame.event.get()
-            self.join_server()
-            if not self.user_data:
-                return
+            events = pygame.event.get()
+            if self.already:
+                # The other player has not made a decision yet -> start the waiter again
+                if not self.other_decision:
+                    self.decision_waiter = threading.Thread(target=self.wait_for_decision)
+                    try:
+                        self.decision_waiter.start()
+                    except RuntimeError:
+                        pass
+                # Check if the player has already made a decision
+                self.decision = wait_for_decision(self.screen, self.clock, self.log, events, self.other_decision)
+                # TODO: The player has made no decision
+                # The player has made a decision
+                if self.decision is not None:
+                    self.client.write(pickle.dumps(self.decision))
+                    # He wants to play with someone else
+                    if self.decision is False:
+                        self.enemy_data = None
+                        self.already = False
+                        self.log = None
+            # The player is starting to search for a new opponent
+            else:
+                self.join_server()
+                if not self.user_data:
+                    return
+
+            if self.user_data or (already and self.decision is True and self.other_decision is True):
+                pygame.time.wait(100)
+                self.log = GameLogic.from_client(self)
+                self.log.start_game_loop()
+                self.already = True
+
+            for event in events:
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+            pygame.display.update()
+            self.clock.tick(60)
 
             pygame.display.update()
             self.clock.tick(60)
@@ -35,9 +80,10 @@ class ClientLogic(BaseLogic):
             self.enemy_data = pickle.loads(self.client.recv())
             self.client.write(self.username.encode())
             self.user_data = pickle.loads(self.client.recv())
-            log = GameLogic.from_client(self)
-            log.start_game_loop()
         return
+
+    def wait_for_decision(self) -> None:
+        self.other_decision = pickle.loads(self.client.recv())
 
     @classmethod
     def from_selector(cls, obj, username: str):
