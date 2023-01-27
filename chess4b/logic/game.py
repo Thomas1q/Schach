@@ -55,13 +55,15 @@ class GameLogic(BaseLogic):
             self.clock.tick(60)
 
     def display_board(self):
+        if self.just_moved:
+            self.just_moved = False
+            return
         if self.board.turn == self.color:
-            if self.just_moved:
-                self.just_moved = False
-            else:
-                self.network.write(pickle.dumps(self.board))
+            print("writing to enemy")
+            self.network.write(pickle.dumps(self.board))
         else:
             try:
+                print("loading from enemy")
                 self.board = pickle.loads(self.network.recv())
             # Raises when an invalid data is received
             except pickle.UnpicklingError:
@@ -107,6 +109,21 @@ class GameLogic(BaseLogic):
                                         self.move_to = None
                                         self.network.write(pickle.dumps(self.board))
                                         self.just_moved = True
+                                        print(f"moved, waiting for enemy")
+                                else:
+                                    move = chess.Move.from_uci(f"{self.selected}{square}")
+                                    if self.board.is_legal(move):
+                                        self.move_to = square
+                        elif self.other_piece(square):
+                            if self.selected:
+                                if self.move_to:
+                                    move = chess.Move.from_uci(f"{self.selected}{square}")
+                                    if self.board.is_legal(move):
+                                        self.board.push(move)
+                                        self.selected = None
+                                        self.move_to = None
+                                        self.network.write(pickle.dumps(self.board))
+                                        self.just_moved = True
                                 else:
                                     move = chess.Move.from_uci(f"{self.selected}{square}")
                                     if self.board.is_legal(move):
@@ -115,14 +132,20 @@ class GameLogic(BaseLogic):
     def my_piece(self, field: str) -> bool:
         square = self.board.piece_at(chess.parse_square(field))
         if square:
-            if square.color == self.color:
-                print(square)
+            if square.color is self.color:
                 return True
         return False
 
     def empty_field(self, field: str) -> bool:
         square = self.board.piece_at(chess.parse_square(field))
         return False if square else True
+
+    def other_piece(self, field: str) -> bool:
+        square = self.board.piece_at(chess.parse_square(field))
+        if square:
+            if square.color is not self.color:
+                return True
+        return False
 
     @classmethod
     def from_client(cls, obj):
