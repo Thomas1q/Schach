@@ -117,6 +117,10 @@ class GameLogic(BaseLogic):
                                             # self.network.write(pickle.dumps(self.board))
                                             self.just_moved = True
                                             print(f"moved, waiting for enemy")
+                                    else:
+                                        move = chess.Move.from_uci(f"{self.selected}{square}")
+                                        if self.board.is_legal(move):
+                                            self.move_to = square
                                 else:
                                     move = chess.Move.from_uci(f"{self.selected}{square}")
                                     if self.board.is_legal(move):
@@ -131,6 +135,10 @@ class GameLogic(BaseLogic):
                                             self.selected = None
                                             self.move_to = None
                                             self.just_moved = True
+                                    else:
+                                        move = chess.Move.from_uci(f"{self.selected}{self.move_to}")
+                                        if self.board.is_legal(move):
+                                            self.move_to = square
                                 else:
                                     move = chess.Move.from_uci(f"{self.selected}{square}")
                                     if self.board.is_legal(move):
