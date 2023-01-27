@@ -202,9 +202,8 @@ class GameDisplay:
 
     def highlight(self, field: str, color: tuple = (52, 78, 91)):
         # Highlight a field with an orange border
-        if chess.SQUARE_NAMES == field:
-            rect_h = pygame.rect(x y, 75, 75)
-            b = pygame.draw.rect(rect_h, color,,,2)
+        rect_h = self.squares.get(field)[0]
+        b = pygame.draw.rect(self.screen, color, rect_h, 2)
 
         pass
 
