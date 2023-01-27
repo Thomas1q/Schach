@@ -2,6 +2,7 @@ import sys
 import pickle
 import chess
 import pygame
+from datetime import datetime
 
 from chess4b.logic import BaseLogic
 from chess4b.models import User
@@ -55,16 +56,23 @@ class GameLogic(BaseLogic):
             self.clock.tick(60)
 
     def display_board(self):
-        if self.just_moved:
-            self.just_moved = False
-            return
-        if self.board.turn == self.color:
-            print("writing to enemy")
-            self.network.write(pickle.dumps(self.board))
+        if self.board.turn == self.color or self.just_moved is True:
+            if self.just_moved is True:
+                self.just_moved = False
+            if self.color:
+                board = chess.Board(self.board.fen())
+                self.network.write(pickle.dumps(board))
+            else:
+                self.network.write(pickle.dumps(self.board))
         else:
             try:
-                print("loading from enemy")
-                self.board = pickle.loads(self.network.recv())
+                data: chess.Board = pickle.loads(self.network.recv())
+                if str(data) != str(self.board):
+                    if self.color:
+                        last_move = data.move_stack.pop()
+                        self.board.push(last_move)
+                    else:
+                        self.board = data
             # Raises when an invalid data is received
             except pickle.UnpicklingError:
                 pass
@@ -95,7 +103,6 @@ class GameLogic(BaseLogic):
             for square in self.game_display.squares:
                 if self.game_display.squares.get(square)[0].collidepoint(pointer):
                     if click:
-                        print(square)
                         if self.my_piece(square):
                             self.selected = square
                             self.move_to = None
@@ -107,7 +114,7 @@ class GameLogic(BaseLogic):
                                         self.board.push(move)
                                         self.selected = None
                                         self.move_to = None
-                                        self.network.write(pickle.dumps(self.board))
+                                        # self.network.write(pickle.dumps(self.board))
                                         self.just_moved = True
                                         print(f"moved, waiting for enemy")
                                 else:
@@ -122,7 +129,6 @@ class GameLogic(BaseLogic):
                                         self.board.push(move)
                                         self.selected = None
                                         self.move_to = None
-                                        self.network.write(pickle.dumps(self.board))
                                         self.just_moved = True
                                 else:
                                     move = chess.Move.from_uci(f"{self.selected}{square}")
