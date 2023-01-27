@@ -41,8 +41,8 @@ def username_input(screen: pygame.Surface, clock: pygame.time.Clock, length: int
     user_text = ''
     text = header_font.render('menu', True, black, turquoise)
     text2 = base_font.render('name:', True, black, turquoise)
-    text3 = base_font.render('host', True, black, 'grey')
-    text4 = base_font.render('client', True, black, 'grey')
+    text3 = base_font.render('host', True, black)
+    text4 = base_font.render('client', True, black)
     text5 = base_font.render('host has to be selected first', True, black, turquoise)
     textRect = text.get_rect()
     textRect.center = (X // 2, Y // 20)
@@ -121,6 +121,9 @@ def username_input(screen: pygame.Surface, clock: pygame.time.Clock, length: int
         # draw rectangle and argument passed which should
         # be on screen
         pygame.draw.rect(screen, color, input_rect)
+
+        pygame.draw.rect(screen, color, host_rect, 2, 2)
+        pygame.draw.rect(screen, color, client_rect, 2, 2)
 
         text_surface = base_font.render(user_text, True, white)
 
