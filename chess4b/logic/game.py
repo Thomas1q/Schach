@@ -88,6 +88,11 @@ class GameLogic(BaseLogic):
                 self.game_display.highlight(self.move_to)
             if self.selected and self.move_to:
                 self.game_display.arrow(self.selected, self.move_to)
+            if self.board.is_check():
+                self.game_display.show_check(
+                    chess.SQUARE_NAMES.index(self.board.king(self.color)),
+                    [chess.SQUARE_NAMES.index(square) for square in self.board.checkers()]
+                )
 
             for event in events:
                 if event.type == pygame.QUIT:
