@@ -113,21 +113,16 @@ class GameLogic(BaseLogic):
                                         self.move_to = square
 
     def my_piece(self, field: str) -> bool:
-        x, y = self.game_display.list_coords(field)
-        board_list_field = self.game_display.board_list(self.board)[x][y]
-        print("my", board_list_field)
-        if (board_list_field.islower() and self.color == chess.BLACK) or (board_list_field.isupper() and self.color == chess.WHITE):
-            return True
-        else:
-            return False
+        square = self.board.piece_at(chess.parse_square(field))
+        if square:
+            if square.color == self.color:
+                print(square)
+                return True
+        return False
 
     def empty_field(self, field: str) -> bool:
-        x, y = self.game_display.list_coords(field)
-        board_list_field = self.game_display.board_list(self.board)[x][y]
-        if board_list_field == ".":
-            return True
-        else:
-            return False
+        square = self.board.piece_at(chess.parse_square(field))
+        return False if square else True
 
     @classmethod
     def from_client(cls, obj):
