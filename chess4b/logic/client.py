@@ -57,7 +57,7 @@ class ClientLogic(BaseLogic):
                 if not self.user_data:
                     return
 
-            if self.user_data or (already and self.decision is True and self.other_decision is True):
+            if (self.user_data and self.decision is True) or (self.already and self.decision is True and self.other_decision is True):
                 pygame.time.wait(100)
                 self.log = GameLogic.from_client(self)
                 self.log.start_game_loop()
@@ -71,15 +71,13 @@ class ClientLogic(BaseLogic):
             pygame.display.update()
             self.clock.tick(60)
 
-            pygame.display.update()
-            self.clock.tick(60)
-
     def join_server(self):
         conn = self.client.client_connect()
         if conn:
             self.enemy_data = pickle.loads(self.client.recv())
             self.client.write(self.username.encode())
             self.user_data = pickle.loads(self.client.recv())
+            self.decision = True
         return
 
     def wait_for_decision(self) -> None:

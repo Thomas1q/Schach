@@ -72,7 +72,7 @@ class HostLogic(BaseLogic):
                     pass
                 wait_for_client(self.screen, self.clock)
 
-            if self.enemy_data or (self.already and self.decision is True and self.other_decision is True):
+            if (self.enemy_data and self.decision is True) or (self.already and self.decision is True and self.other_decision is True):
                 pygame.time.wait(100)
                 self.log = GameLogic.from_host(self)
                 self.log.start_game_loop()
@@ -99,6 +99,7 @@ class HostLogic(BaseLogic):
         self.enemy_data = self._db_intf.get_user_data(self.server.recv().decode())
         self.server.write(pickle.dumps(self.enemy_data))
         print("Client connected")
+        self.decision = True
 
     def wait_for_decision(self) -> None:
         self.other_decision = pickle.loads(self.server.recv())

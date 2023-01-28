@@ -54,5 +54,6 @@ def wait_for_decision(
     # Wait for the player to decide if he wants to play again or wait for another player.
     # True -> play again
     # False -> wait for another player
+    # None -> not made any decision yet
     # Other decision is the decision of the other player
     return True

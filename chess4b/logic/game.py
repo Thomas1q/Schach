@@ -59,6 +59,10 @@ class GameLogic(BaseLogic):
             self.clock.tick(60)
 
     def display_board(self):
+        if isinstance(self.board, bool):
+            self.network.write(pickle.dumps(True))
+            self.board = pickle.loads(self.network.recv())
+            return
         if self.board.turn == self.color or self.just_moved is True:
             if self.just_moved is True:
                 self.just_moved = False
@@ -70,6 +74,8 @@ class GameLogic(BaseLogic):
         else:
             try:
                 data: chess.Board = pickle.loads(self.network.recv())
+                if isinstance(data, bool):
+                    return
                 if str(data) != str(self.board):
                     if self.color:
                         last_move = data.move_stack.pop()
@@ -84,6 +90,8 @@ class GameLogic(BaseLogic):
         self.game_display.show_board(self.board)
 
     def get_move(self, events: list[pygame.event.Event]):
+        if isinstance(self.board, bool):
+            return
         click = False
         if self.board.legal_moves.count() == 0:
             print("END")
