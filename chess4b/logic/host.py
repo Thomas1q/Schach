@@ -48,14 +48,12 @@ class HostLogic(BaseLogic):
                         print("Started decision waiter")
                     except RuntimeError:
                         pass
-                print(self.other_decision)
                 # Check if the player has already made a decision
                 if not self.decision:
                     self.decision = wait_for_decision(self.log, events, self.other_decision)
                 # The player has made a decision
                 if self.decision is not None:
                     if not self.told_decision:
-                        print("Sending decision", self.decision)
                         self.server.write(pickle.dumps(self.decision))
                         self.told_decision = True
                     # He wants to play with someone else
@@ -68,7 +66,6 @@ class HostLogic(BaseLogic):
                 # Starting a new
                 try:
                     if not self.client_waiter:
-                        print("Starting client waiter")
                         self.client_waiter = threading.Thread(target=self.wait_for_client)
                         try:
                             self.client_waiter.start()
@@ -106,7 +103,6 @@ class HostLogic(BaseLogic):
 
         self.enemy_data = self._db_intf.get_user_data(self.server.recv().decode())
         self.server.write(pickle.dumps(self.enemy_data))
-        print("Client connected")
         self.decision = True
 
     def wait_for_decision(self) -> None:

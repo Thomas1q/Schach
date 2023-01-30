@@ -39,7 +39,6 @@ class ClientLogic(BaseLogic):
                     self.decision_waiter = threading.Thread(target=self.wait_for_decision)
                     try:
                         self.decision_waiter.start()
-                        print("Started decision waiter")
                     except RuntimeError:
                         pass
                 # Check if the player has already made a decision
@@ -48,7 +47,6 @@ class ClientLogic(BaseLogic):
                 # The player has made a decision
                 if self.decision is not None:
                     if not self.told_decision:
-                        print("Sending decision", self.decision)
                         self.client.write(pickle.dumps(self.decision))
                         self.told_decision = True
                     # He wants to play with someone else
