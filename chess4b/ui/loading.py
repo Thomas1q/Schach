@@ -78,6 +78,12 @@ def wait_for_decision(
 
     draw_text(TEXT, FONT, TEXT_COL, 200, 50, screen)
 
+    if game.board.turn == game.color:
+        TEXT = "YOU WON"
+    else:
+        TEXT = "YOU LOST"
+    draw_text(TEXT, FONT, TEXT_COL, 200, 100, screen)
+
     rect_pa = pygame.Rect(170, 200, 140, 32)
     rect_w = pygame.Rect(170, 400, 140, 32)
 
@@ -101,14 +107,17 @@ def wait_for_decision(
         text_od = 'OPPONENT WANTS TO PLAY AGAIN'
         draw_text(text_od, FONT, TEXT_COL, 15, 600, screen)
 
-    else:
+    elif other_decision is False:
         text_od = 'OPPONENT DOES NOT WANT TO PLAY AGAIN'
+        draw_text(text_od, FONT, TEXT_COL, 15, 600, screen)
+    else:
+        text_od = 'WAITING FOR OPPONENTS DECISION'
         draw_text(text_od, FONT, TEXT_COL, 15, 600, screen)
 
     active = False
     click = False
 
-    for event in pygame.event.get():
+    for event in events:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
@@ -120,10 +129,9 @@ def wait_for_decision(
     mouse_pos = pygame.mouse.get_pos()
     if rect_pa.collidepoint(mouse_pos):
         if click:
-            if other_decision:
-                active = True
-                color = pygame.Color("lightskyblue3")
-                return True
+            active = True
+            color = pygame.Color("lightskyblue3")
+            return True
 
     elif rect_w.collidepoint(mouse_pos):
         if click:
@@ -135,6 +143,4 @@ def wait_for_decision(
         if click:
             if active:
                 color = white
-
-
-
+    return None

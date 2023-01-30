@@ -96,7 +96,6 @@ class GameLogic(BaseLogic):
             return
         click = False
         if self.board.legal_moves.count() == 0:
-            print("END")
             self.finished = True
             sieg_sound()
             return
@@ -110,8 +109,8 @@ class GameLogic(BaseLogic):
                 self.game_display.arrow(self.selected, self.move_to)
             if self.board.is_check():
                 self.game_display.show_check(
-                    list(self.game_display.squares)[self.board.king(self.color)],
-                    [list(self.game_display.squares)[square] for square in self.board.checkers()]
+                    chess.SQUARE_NAMES[self.board.king(self.color)],
+                    [chess.SQUARE_NAMES[square] for square in self.board.checkers()]
                 )
 
             for event in events:

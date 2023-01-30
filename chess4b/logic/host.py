@@ -29,6 +29,7 @@ class HostLogic(BaseLogic):
 
         self.decision: bool | None = None
         self.other_decision: bool | None = None
+        self.told_decision: bool = False
 
         self._db_intf.close()
         super().__init__(screen, clock, False)
@@ -40,18 +41,23 @@ class HostLogic(BaseLogic):
             # A game was already played
             if self.already:
                 # The other player has not made a decision yet -> start the waiter again
-                if not self.other_decision:
+                if not self.decision_waiter:
                     self.decision_waiter = threading.Thread(target=self.wait_for_decision)
                     try:
                         self.decision_waiter.start()
+                        print("Started decision waiter")
                     except RuntimeError:
                         pass
+                print(self.other_decision)
                 # Check if the player has already made a decision
-                self.decision = wait_for_decision(self.screen, self.clock, self.log, events, self.other_decision)
-                # TODO: The player has made no decision
+                if not self.decision:
+                    self.decision = wait_for_decision(self.screen, self.clock, self.log, events, self.other_decision)
                 # The player has made a decision
                 if self.decision is not None:
-                    self.server.write(pickle.dumps(self.decision))
+                    if not self.told_decision:
+                        print("Sending decision", self.decision)
+                        self.server.write(pickle.dumps(self.decision))
+                        self.told_decision = True
                     # He wants to play with someone else
                     if self.decision is False:
                         self.enemy_data = None
@@ -72,11 +78,13 @@ class HostLogic(BaseLogic):
                     pass
                 wait_for_client(self.screen, self.clock)
 
-            if (self.enemy_data and self.decision is True) or (self.already and self.decision is True and self.other_decision is True):
+            if self.decision is True and ((self.user_data and not self.already) or (self.already and self.other_decision is True)):
                 pygame.time.wait(100)
                 self.log = GameLogic.from_host(self)
                 self.log.start_game_loop()
                 self.already = True
+                self.decision = None
+                self.other_decision = None
 
                 # Reset waiters to start new when needed
                 self.client_waiter = None

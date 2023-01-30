@@ -239,5 +239,6 @@ class GameDisplay:
 
         for check in checker:
             self.highlight(check, red)
+            self.arrow(field, check, red)
 
         pass
