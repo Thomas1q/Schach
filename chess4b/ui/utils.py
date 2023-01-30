@@ -119,8 +119,8 @@ def username_input(screen: pygame.Surface, clock: pygame.time.Clock, length: int
         # be on screen
         pygame.draw.rect(screen, color, input_rect)
 
-        pygame.draw.rect(screen, color, host_rect, 2, 2)
-        pygame.draw.rect(screen, color, client_rect, 2, 2)
+        pygame.draw.rect(screen, grey, host_rect, 2, 2)
+        pygame.draw.rect(screen, grey, client_rect, 2, 2)
 
         text_surface = base_font.render(user_text, True, white)
 
