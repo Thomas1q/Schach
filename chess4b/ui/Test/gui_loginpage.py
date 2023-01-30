@@ -93,7 +93,7 @@ while running:
 
     # Fill the background with white
     screen.fill((turquoise))
-    pygame.draw.rect(screen, color2, host_rect)
+    pygame.draw.rect(screen, color2, host_rect, 2)
     pygame.draw.rect(screen, color2, client_rect)
     screen.blit(text, textRect)
     screen.blit(text2, text2Rect)

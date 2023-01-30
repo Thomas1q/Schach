@@ -39,11 +39,11 @@ def username_input(screen: pygame.Surface, clock: pygame.time.Clock, length: int
     header_font = pygame.font.Font('AGENCYR.ttf', 64)
     base_font = pygame.font.Font('AGENCYR.ttf', 32)
     user_text = ''
-    text = header_font.render('menu', True, black, turquoise)
-    text2 = base_font.render('name:', True, black, turquoise)
-    text3 = base_font.render('host', True, black)
-    text4 = base_font.render('client', True, black)
-    text5 = base_font.render('host has to be selected first', True, black, turquoise)
+    text = header_font.render('LOGIN MENU', True, white, turquoise)
+    text2 = base_font.render('name:', True, white, turquoise)
+    text3 = base_font.render('host', True, white)
+    text4 = base_font.render('client', True, white)
+    text5 = base_font.render('host has to be selected first', True, white, turquoise)
     textRect = text.get_rect()
     textRect.center = (X // 2, Y // 20)
     text2Rect = text.get_rect()
@@ -58,9 +58,6 @@ def username_input(screen: pygame.Surface, clock: pygame.time.Clock, length: int
     host_rect = pygame.Rect(122, 308, 50, 45)
 
     client_rect = pygame.Rect(242, 308, 63, 45)
-
-    #draw_text('host has to be selected first', base_font, white, 175, 600)
-
 
     active = False
     click = False

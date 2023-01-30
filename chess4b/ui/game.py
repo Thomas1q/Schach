@@ -232,4 +232,12 @@ class GameDisplay:
     def show_check(self, field: str, checker: list[str]):
         # Display if you are in check and the position of your king
         # Show the fields of the checkers
+        red = (255, 64, 64)
+
+        rect_c = self.squares.get(field)[0]
+        pygame.draw.rect(self.screen, red, rect_c, 4)
+
+        for check in checker:
+            self.highlight(check, red)
+
         pass

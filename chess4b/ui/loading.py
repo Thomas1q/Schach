@@ -4,6 +4,10 @@ import chess4b.ui.gui_buttons as gui_buttons
 from chess4b.logic.game import GameLogic
 
 
+def __init__(self, screen: pygame.Surface):
+    self.screen: pygame.Surface = screen
+
+
 def draw_text(text, font, text_col, x, y, screen):
     img = font.render(text, True, text_col)
     screen.blit(img, (x, y))
@@ -56,4 +60,64 @@ def wait_for_decision(
     # False -> wait for another player
     # None -> not made any decision yet
     # Other decision is the decision of the other player
+
+    X = 450
+    Y = 700
+    screen = pygame.display.set_mode([X, Y])
+    pygame.display.set_caption('End Window')
+    screen.fill((52, 78, 91))
+
+    turquoise = (52, 78, 91)
+    white = (248, 239, 221)
+    color = (248, 239, 221)
+
+    TEXT = "END MENU"
+    FONT = pygame.font.Font('AGENCYR.ttf', 32)
+    TEXT_COL = pygame.Color(248, 239, 221)
+
+    draw_text(TEXT, FONT, TEXT_COL, 200, 50, screen)
+
+    base_font = pygame.font.Font('AGENCYR.ttf', 32)
+    text = base_font.render('PLAY AGAIN', True, TEXT_COL, turquoise)
+    textRect = text.get_rect()
+    textRect.center = (X // 2, Y // 20)
+
+    screen.blit(text, textRect)
+
+    rect_pa = pygame.Rect(170, 200, 140, 32)
+    rect_w = pygame.Rect(170, 200, 140, 32)
+
+    pygame.draw.rect(screen, color, rect_pa, 2, 2)
+    pygame.draw.rect(screen, color, rect_w, 2, 2)
+
+    active = False
+    click = False
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                click = True
+            elif event.type == pygame.MOUSEBUTTONUP:
+                click = False
+
+        mouse_pos = pygame.mouse.get_pos()
+        if rect_pa.collidepoint(mouse_pos):
+            if click:
+                if other_decision:
+                    active = True
+                    color = pygame.Color("lightskyblue3")
+
+        elif rect_w.collidepoint(mouse_pos):
+            if click:
+                active = True
+                color = pygame.Color("lightskyblue3")
+
+        else:
+            if click:
+                if active:
+                    color = white
+
     return True
