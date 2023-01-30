@@ -89,6 +89,7 @@ def wait_for_decision(
     textRect.center = (X // 2, Y // 5)
 
     screen.blit(text, textRect)
+    screen.blit(text2, text2Rect)
 
     rect_pa = pygame.Rect(170, 200, 140, 32)
     rect_w = pygame.Rect(170, 200, 140, 32)
