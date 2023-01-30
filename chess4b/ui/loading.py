@@ -5,16 +5,12 @@ import sys
 from chess4b.logic.game import GameLogic
 
 
-def __init__(self, screen: pygame.Surface):
-    self.screen: pygame.Surface = screen
-
-
 def draw_text(text, font, text_col, x, y, screen):
     img = font.render(text, True, text_col)
     screen.blit(img, (x, y))
 
 
-def wait_for_client(screen: pygame.Surface, clock: pygame.time.Clock) -> None:
+def wait_for_client() -> None:
     # creates screen + settings
 
     X = 1200
@@ -51,8 +47,6 @@ def wait_for_client(screen: pygame.Surface, clock: pygame.time.Clock) -> None:
 
 
 def wait_for_decision(
-        screen: pygame.Surface,
-        clock: pygame.time.Clock,
         game: GameLogic,
         events: list[pygame.event.Event],
         other_decision: bool | None) -> bool | None:
@@ -62,59 +56,60 @@ def wait_for_decision(
     # None -> not made any decision yet
     # Other decision is the decision of the other player
 
+    # Define Constants that are used in this function
     X = 450
     Y = 700
+    FONT = pygame.font.Font('AGENCYR.ttf', 32)
+    COL = pygame.Color(248, 239, 221)
+    TURQUOISE = pygame.Color(52, 78, 91)
+
     screen = pygame.display.set_mode([X, Y])
     pygame.display.set_caption('End Window')
-    screen.fill((52, 78, 91))
+    screen.fill(TURQUOISE)
 
-    turquoise = (52, 78, 91)
-    white = (248, 239, 221)
-    color = (248, 239, 221)
+    end_text = FONT.render("END MENU", True, COL)
+    end_text_rect = end_text.get_rect(center=(X / 2, 50))
+    screen.blit(end_text, end_text_rect)
 
-    TEXT = "END MENU"
-    FONT = pygame.font.Font('AGENCYR.ttf', 32)
-    TEXT_COL = pygame.Color(248, 239, 221)
-
-    draw_text(TEXT, FONT, TEXT_COL, 200, 50, screen)
-
+    # Display it the player won or lost
     if game.board.turn == game.color:
         TEXT = "YOU WON"
     else:
         TEXT = "YOU LOST"
-    draw_text(TEXT, FONT, TEXT_COL, 200, 100, screen)
+    outcome_text = FONT.render(TEXT, True, COL)
+    outcome_text_rect = outcome_text.get_rect(center=(X / 2, 150))
+    screen.blit(outcome_text, outcome_text_rect)
 
-    rect_pa = pygame.Rect(170, 200, 140, 32)
-    rect_w = pygame.Rect(170, 400, 140, 32)
 
-    pygame.draw.rect(screen, color, rect_pa, 2, 2)
-    pygame.draw.rect(screen, color, rect_w, 2, 2)
 
-    base_font = pygame.font.Font('AGENCYR.ttf', 32)
-    text = base_font.render('PLAY AGAIN', True, TEXT_COL, turquoise)
-    textRect = text.get_rect()
-    textRect.center = rect_pa.center
+    # Button to play again
+    pa_text = FONT.render('PLAY AGAIN', True, COL, TURQUOISE)
+    pa_rect = pa_text.get_rect(center=(X / 2, 200))
+    pygame.draw.rect(screen, COL, pa_rect.inflate(20, 0), 2, 2)
+    screen.blit(pa_text, pa_rect)
 
-    base_font = pygame.font.Font('AGENCYR.ttf', 32)
-    text2 = base_font.render('NEW PLAYER', True, TEXT_COL, turquoise)
-    text2Rect = text.get_rect()
-    text2Rect.center = (rect_w.center[0]-4, rect_w.center[1])
+    # Button to wait for another player
+    np_text = FONT.render('NEW PLAYER', True, COL, TURQUOISE)
+    np_rect = np_text.get_rect(center=(X / 2, 400))
+    pygame.draw.rect(screen, COL, np_rect.inflate(20, 0), 2, 2)
+    screen.blit(np_text, np_rect)
 
-    screen.blit(text, textRect)
-    screen.blit(text2, text2Rect)
+    # Show button outline
+    # pygame.draw.rect(screen, COL, pa_rect.inflate(2, 0), 2, 2)
+    # pygame.draw.rect(screen, COL, np_rect.inflate(2, 0), 2, 2)
 
-    if other_decision:
+    # Show the decision of the other player
+    if other_decision is True:
         text_od = 'OPPONENT WANTS TO PLAY AGAIN'
-        draw_text(text_od, FONT, TEXT_COL, 15, 600, screen)
-
     elif other_decision is False:
         text_od = 'OPPONENT DOES NOT WANT TO PLAY AGAIN'
-        draw_text(text_od, FONT, TEXT_COL, 15, 600, screen)
     else:
         text_od = 'WAITING FOR OPPONENTS DECISION'
-        draw_text(text_od, FONT, TEXT_COL, 15, 600, screen)
 
-    active = False
+    text_od = FONT.render(text_od, True, COL)
+    text_od_rect = text_od.get_rect(center=(X / 2, 600))
+    screen.blit(text_od, text_od_rect)
+    
     click = False
 
     for event in events:
@@ -126,21 +121,13 @@ def wait_for_decision(
         elif event.type == pygame.MOUSEBUTTONUP:
             click = False
 
+    # Check if a button was pressed and return the decision
     mouse_pos = pygame.mouse.get_pos()
-    if rect_pa.collidepoint(mouse_pos):
+    if pa_rect.collidepoint(mouse_pos):
         if click:
-            active = True
-            color = pygame.Color("lightskyblue3")
             return True
-
-    elif rect_w.collidepoint(mouse_pos):
+    elif np_rect.collidepoint(mouse_pos):
         if click:
-            active = True
-            color = pygame.Color("lightskyblue3")
             return False
 
-    else:
-        if click:
-            if active:
-                color = white
     return None
