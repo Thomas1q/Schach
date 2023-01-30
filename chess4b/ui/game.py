@@ -29,18 +29,18 @@ class GameDisplay:
         if self.color:
 
             var = "abcdefgh"
-            rng = range(1, 9)
+            rng = range(8, 0, -1)
 
         else:
 
             var = "hgfedcba"
-            rng = range(8, 0, -1)
+            rng = range(1, 9)
 
-        for num in rng:
+
+        for ind, num in enumerate(rng, start=1):
             for char in var:
-                a = pygame.Rect(300 + (var.index(char)) * 75, 50 + num * 75, 75, 75)
-                if (num + (var.index(char))) % 2:
-
+                a = pygame.Rect(300 + (var.index(char)) * 75, 50 + ind * 75, 75, 75)
+                if (ind + (var.index(char))) % 2:
                     self.squares[f"{char}{num}"] = [a, color_rect]
                 else:
                     self.squares[f"{char}{num}"] = [a, color_rect_2]
