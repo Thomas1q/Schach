@@ -92,7 +92,7 @@ def wait_for_decision(
     screen.blit(text2, text2Rect)
 
     rect_pa = pygame.Rect(170, 200, 140, 32)
-    rect_w = pygame.Rect(170, 200, 140, 32)
+    rect_w = pygame.Rect(170, 400, 140, 32)
 
     pygame.draw.rect(screen, color, rect_pa, 2, 2)
     pygame.draw.rect(screen, color, rect_w, 2, 2)
