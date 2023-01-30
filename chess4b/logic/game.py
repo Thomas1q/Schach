@@ -7,6 +7,7 @@ from chess4b.logic import BaseLogic
 from chess4b.models import User
 from chess4b.network import Server, Client
 from chess4b.ui.game import *
+from chess4b.Sound.Sounds import move_sound, sieg_sound
 
 
 class GameLogic(BaseLogic):
@@ -77,6 +78,7 @@ class GameLogic(BaseLogic):
                 if isinstance(data, bool):
                     return
                 if str(data) != str(self.board):
+                    move_sound()
                     if self.color:
                         last_move = data.move_stack.pop()
                         self.board.push(last_move)
@@ -96,6 +98,7 @@ class GameLogic(BaseLogic):
         if self.board.legal_moves.count() == 0:
             print("END")
             self.finished = True
+            sieg_sound()
             return
 
         if self.board.turn == self.color:
@@ -138,7 +141,7 @@ class GameLogic(BaseLogic):
                                             self.move_to = None
                                             # self.network.write(pickle.dumps(self.board))
                                             self.just_moved = True
-                                            print(f"moved, waiting for enemy")
+                                            move_sound()
                                     else:
                                         move = chess.Move.from_uci(f"{self.selected}{square}")
                                         if self.board.is_legal(move):
