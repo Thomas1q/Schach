@@ -1,5 +1,6 @@
 import pygame
 import chess4b.ui.gui_buttons as gui_buttons
+import sys
 
 from chess4b.logic.game import GameLogic
 
@@ -82,6 +83,11 @@ def wait_for_decision(
     textRect = text.get_rect()
     textRect.center = (X // 2, Y // 20)
 
+    base_font = pygame.font.Font('AGENCYR.ttf', 32)
+    text2 = base_font.render('NEW PLAYER', True, TEXT_COL, turquoise)
+    text2Rect = text.get_rect()
+    textRect.center = (X // 2, Y // 5)
+
     screen.blit(text, textRect)
 
     rect_pa = pygame.Rect(170, 200, 140, 32)
@@ -92,32 +98,33 @@ def wait_for_decision(
 
     active = False
     click = False
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                click = True
-            elif event.type == pygame.MOUSEBUTTONUP:
-                click = False
 
-        mouse_pos = pygame.mouse.get_pos()
-        if rect_pa.collidepoint(mouse_pos):
-            if click:
-                if other_decision:
-                    active = True
-                    color = pygame.Color("lightskyblue3")
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            click = True
+        elif event.type == pygame.MOUSEBUTTONUP:
+            click = False
 
-        elif rect_w.collidepoint(mouse_pos):
-            if click:
+    mouse_pos = pygame.mouse.get_pos()
+    if rect_pa.collidepoint(mouse_pos):
+        if click:
+            if other_decision:
                 active = True
                 color = pygame.Color("lightskyblue3")
+                return True
 
-        else:
-            if click:
-                if active:
-                    color = white
+    elif rect_w.collidepoint(mouse_pos):
+        if click:
+            active = True
+            color = pygame.Color("lightskyblue3")
+            return False
 
-    return True
+    else:
+        if click:
+            if active:
+                color = white
+
+
