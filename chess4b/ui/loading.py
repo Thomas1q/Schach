@@ -39,8 +39,6 @@ def wait_for_client() -> None:
     TEXT_COL = pygame.Color(255, 255, 255)
 
     # displays the text via draw_text function
-
-    draw_text("PRESS BUTTON TO START", font, TEXT_COL, 475, 100, screen)
     draw_text("WAITING FOR SECOND PLAYER", font, TEXT_COL, 455, 500, screen)
 
     pass
@@ -79,8 +77,6 @@ def wait_for_decision(
     outcome_text = FONT.render(TEXT, True, COL)
     outcome_text_rect = outcome_text.get_rect(center=(X / 2, 150))
     screen.blit(outcome_text, outcome_text_rect)
-
-
 
     # Button to play again
     pa_text = FONT.render('PLAY AGAIN', True, COL, TURQUOISE)
