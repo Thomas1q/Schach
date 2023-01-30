@@ -86,7 +86,7 @@ def wait_for_decision(
     base_font = pygame.font.Font('AGENCYR.ttf', 32)
     text2 = base_font.render('NEW PLAYER', True, TEXT_COL, turquoise)
     text2Rect = text.get_rect()
-    textRect.center = (X // 2, Y // 5)
+    textRect.center = (X // 1, Y // 5)
 
     screen.blit(text, textRect)
     screen.blit(text2, text2Rect)
