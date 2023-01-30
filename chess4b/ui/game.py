@@ -59,11 +59,7 @@ class GameDisplay:
         pygame.display.set_caption('Game Window')
         self.screen.fill(turquoise)
 
-
         pygame.draw.rect(self.screen, 'black', pygame.Rect(296, 121, 608, 608),4)
-
-        img = self.font.render("PRESS ESC TO PAUSE", True, self.text_col)
-        self.screen.blit(img, (500, 750))
 
         # Display the playing field including the text
 
@@ -76,6 +72,7 @@ class GameDisplay:
         counter_2 = 0
 
         if self.color:
+
             for char in text:
                 img = self.font.render(char, True, self.text_col_2)
                 self.screen.blit(img, (counter * 75 + 330, 75))
@@ -86,6 +83,7 @@ class GameDisplay:
                 self.screen.blit(img_2, (260, counter_2 * 75 + 140))
                 counter_2 = counter_2 + 1
         else:
+
             for char in text_r:
                 img = self.font.render(char, True, self.text_col_2)
                 self.screen.blit(img, (counter * 75 + 330, 75))
@@ -137,24 +135,17 @@ class GameDisplay:
         white_knight = pygame.transform.scale(white_knight, size)
         white_rook = pygame.transform.scale(white_rook, size)
 
-        """""""""
-        black_pawn_button = gui_buttons.Button(500, 200, black_pawn, 1)
-        black_queen_button = gui_buttons.Button(125, 200, black_queen, 1)
-        black_king_button = gui_buttons.Button(157, 400, black_king, 1)
-        black_bishop_button = gui_buttons.Button(175, 500, black_bishop, 1)
-        black_knight_button = gui_buttons.Button(157, 400, black_knight, 1)
-        black_rook_button = gui_buttons.Button(157, 400, black_rook, 1)
+        if board.turn:
 
-        white_pawn_button = gui_buttons.Button(500, 200, white_pawn, 1)
-        white_queen_button = gui_buttons.Button(125, 200, white_queen, 1)
-        white_king_button = gui_buttons.Button(157, 400, white_king, 1)
-        white_bishop_button = gui_buttons.Button(175, 500, white_bishop, 1)
-        white_knight_button = gui_buttons.Button(157, 400, white_knight, 1)
-        white_rook_button = gui_buttons.Button(157, 400, white_rook, 1)
-        """""""""
+            img = self.font.render("WHITES TURN", True, self.text_col_2)
+            self.screen.blit(img, (530, 750))
+
+        else:
+
+            img = self.font.render("BLACKS TURN", True, self.text_col_2)
+            self.screen.blit(img, (530, 750))
 
         for square, names in zip(chess.SQUARES, chess.SQUARE_NAMES):
-            #print(names, board.piece_at(square))
 
             command = board.piece_at(square)
             if command:

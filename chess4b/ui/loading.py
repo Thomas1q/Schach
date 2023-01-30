@@ -76,10 +76,10 @@ def wait_for_decision(
     FONT = pygame.font.Font('AGENCYR.ttf', 32)
     TEXT_COL = pygame.Color(248, 239, 221)
 
-    draw_text(TEXT, FONT, TEXT_COL, 200, 50, screen)
+    draw_text(TEXT, FONT, TEXT_COL, 175, 50, screen)
 
-    rect_pa = pygame.Rect(170, 200, 140, 32)
-    rect_w = pygame.Rect(170, 400, 140, 32)
+    rect_pa = pygame.Rect(155, 200, 140, 32)
+    rect_w = pygame.Rect(155, 400, 140, 32)
 
     pygame.draw.rect(screen, color, rect_pa, 2, 2)
     pygame.draw.rect(screen, color, rect_w, 2, 2)
