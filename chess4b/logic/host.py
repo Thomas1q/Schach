@@ -45,7 +45,6 @@ class HostLogic(BaseLogic):
                     self.decision_waiter = threading.Thread(target=self.wait_for_decision)
                     try:
                         self.decision_waiter.start()
-                        print("Started decision waiter")
                     except RuntimeError:
                         pass
                 # Check if the player has already made a decision
