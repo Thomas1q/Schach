@@ -31,6 +31,8 @@ class GameLogic(BaseLogic):
         self.move_to: str | None = None
         self.just_moved: bool = False
 
+        self.finished: bool = False
+
         super().__init__(screen, clock)
 
     def start_game_loop(self):
@@ -44,6 +46,8 @@ class GameLogic(BaseLogic):
 
             self.display_board()
 
+            if self.finished:
+                return
             self.get_move(events)
 
             for event in events:
@@ -55,14 +59,29 @@ class GameLogic(BaseLogic):
             self.clock.tick(60)
 
     def display_board(self):
-        if self.board.turn == self.color:
-            if self.just_moved:
+        if isinstance(self.board, bool):
+            self.network.write(pickle.dumps(True))
+            self.board = pickle.loads(self.network.recv())
+            return
+        if self.board.turn == self.color or self.just_moved is True:
+            if self.just_moved is True:
                 self.just_moved = False
+            if self.color:
+                board = chess.Board(self.board.fen())
+                self.network.write(pickle.dumps(board))
             else:
                 self.network.write(pickle.dumps(self.board))
         else:
             try:
-                self.board = pickle.loads(self.network.recv())
+                data: chess.Board = pickle.loads(self.network.recv())
+                if isinstance(data, bool):
+                    return
+                if str(data) != str(self.board):
+                    if self.color:
+                        last_move = data.move_stack.pop()
+                        self.board.push(last_move)
+                    else:
+                        self.board = data
             # Raises when an invalid data is received
             except pickle.UnpicklingError:
                 pass
@@ -71,7 +90,14 @@ class GameLogic(BaseLogic):
         self.game_display.show_board(self.board)
 
     def get_move(self, events: list[pygame.event.Event]):
+        if isinstance(self.board, bool):
+            return
         click = False
+        if self.board.legal_moves.count() == 0:
+            print("END")
+            self.finished = True
+            return
+
         if self.board.turn == self.color:
             if self.selected:
                 self.game_display.highlight(self.selected)
@@ -79,6 +105,11 @@ class GameLogic(BaseLogic):
                 self.game_display.highlight(self.move_to)
             if self.selected and self.move_to:
                 self.game_display.arrow(self.selected, self.move_to)
+            if self.board.is_check():
+                self.game_display.show_check(
+                    list(self.game_display.squares)[self.board.king(self.color)],
+                    [list(self.game_display.squares)[square] for square in self.board.checkers()]
+                )
 
             for event in events:
                 if event.type == pygame.QUIT:
@@ -93,41 +124,65 @@ class GameLogic(BaseLogic):
             for square in self.game_display.squares:
                 if self.game_display.squares.get(square)[0].collidepoint(pointer):
                     if click:
-                        print(square)
                         if self.my_piece(square):
                             self.selected = square
                             self.move_to = None
                         if self.empty_field(square):
                             if self.selected:
                                 if self.move_to:
-                                    move = chess.Move.from_uci(f"{self.selected}{self.move_to}")
+                                    if square == self.move_to:
+                                        move = chess.Move.from_uci(f"{self.selected}{self.move_to}")
+                                        if self.board.is_legal(move):
+                                            self.board.push(move)
+                                            self.selected = None
+                                            self.move_to = None
+                                            # self.network.write(pickle.dumps(self.board))
+                                            self.just_moved = True
+                                            print(f"moved, waiting for enemy")
+                                    else:
+                                        move = chess.Move.from_uci(f"{self.selected}{square}")
+                                        if self.board.is_legal(move):
+                                            self.move_to = square
+                                else:
+                                    move = chess.Move.from_uci(f"{self.selected}{square}")
                                     if self.board.is_legal(move):
-                                        self.board.push(move)
-                                        self.selected = None
-                                        self.move_to = None
-                                        self.network.write(pickle.dumps(self.board))
-                                        self.just_moved = True
+                                        self.move_to = square
+                        elif self.other_piece(square):
+                            if self.selected:
+                                if self.move_to:
+                                    if square == self.move_to:
+                                        move = chess.Move.from_uci(f"{self.selected}{square}")
+                                        if self.board.is_legal(move):
+                                            self.board.push(move)
+                                            self.selected = None
+                                            self.move_to = None
+                                            self.just_moved = True
+                                    else:
+                                        move = chess.Move.from_uci(f"{self.selected}{self.move_to}")
+                                        if self.board.is_legal(move):
+                                            self.move_to = square
                                 else:
                                     move = chess.Move.from_uci(f"{self.selected}{square}")
                                     if self.board.is_legal(move):
                                         self.move_to = square
 
     def my_piece(self, field: str) -> bool:
-        x, y = self.game_display.list_coords(field)
-        board_list_field = self.game_display.board_list(self.board)[x][y]
-        print("my", board_list_field)
-        if (board_list_field.islower() and self.color == chess.BLACK) or (board_list_field.isupper() and self.color == chess.WHITE):
-            return True
-        else:
-            return False
+        square = self.board.piece_at(chess.parse_square(field))
+        if square:
+            if square.color is self.color:
+                return True
+        return False
 
     def empty_field(self, field: str) -> bool:
-        x, y = self.game_display.list_coords(field)
-        board_list_field = self.game_display.board_list(self.board)[x][y]
-        if board_list_field == ".":
-            return True
-        else:
-            return False
+        square = self.board.piece_at(chess.parse_square(field))
+        return False if square else True
+
+    def other_piece(self, field: str) -> bool:
+        square = self.board.piece_at(chess.parse_square(field))
+        if square:
+            if square.color is not self.color:
+                return True
+        return False
 
     @classmethod
     def from_client(cls, obj):
