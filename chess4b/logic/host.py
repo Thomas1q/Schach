@@ -51,7 +51,7 @@ class HostLogic(BaseLogic):
                 print(self.other_decision)
                 # Check if the player has already made a decision
                 if not self.decision:
-                    self.decision = wait_for_decision(self.screen, self.clock, self.log, events, self.other_decision)
+                    self.decision = wait_for_decision(self.log, events, self.other_decision)
                 # The player has made a decision
                 if self.decision is not None:
                     if not self.told_decision:
@@ -76,7 +76,7 @@ class HostLogic(BaseLogic):
                             pass
                 except RuntimeError:
                     pass
-                wait_for_client(self.screen, self.clock)
+                wait_for_client()
 
             if self.decision is True and ((self.user_data and not self.already) or (self.already and self.other_decision is True)):
                 pygame.time.wait(100)

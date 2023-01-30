@@ -44,7 +44,7 @@ class ClientLogic(BaseLogic):
                         pass
                 # Check if the player has already made a decision
                 if not self.decision:
-                    self.decision = wait_for_decision(self.screen, self.clock, self.log, events, self.other_decision)
+                    self.decision = wait_for_decision(self.log, events, self.other_decision)
                 # The player has made a decision
                 if self.decision is not None:
                     if not self.told_decision:
