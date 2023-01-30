@@ -78,24 +78,32 @@ def wait_for_decision(
 
     draw_text(TEXT, FONT, TEXT_COL, 200, 50, screen)
 
-    base_font = pygame.font.Font('AGENCYR.ttf', 32)
-    text = base_font.render('PLAY AGAIN', True, TEXT_COL, turquoise)
-    textRect = text.get_rect()
-    textRect.center = (X // 2, Y // 20)
-
-    base_font = pygame.font.Font('AGENCYR.ttf', 32)
-    text2 = base_font.render('NEW PLAYER', True, TEXT_COL, turquoise)
-    text2Rect = text.get_rect()
-    textRect.center = (X // 1, Y // 5)
-
-    screen.blit(text, textRect)
-    screen.blit(text2, text2Rect)
-
     rect_pa = pygame.Rect(170, 200, 140, 32)
     rect_w = pygame.Rect(170, 400, 140, 32)
 
     pygame.draw.rect(screen, color, rect_pa, 2, 2)
     pygame.draw.rect(screen, color, rect_w, 2, 2)
+
+    base_font = pygame.font.Font('AGENCYR.ttf', 32)
+    text = base_font.render('PLAY AGAIN', True, TEXT_COL, turquoise)
+    textRect = text.get_rect()
+    textRect.center = rect_pa.center
+
+    base_font = pygame.font.Font('AGENCYR.ttf', 32)
+    text2 = base_font.render('NEW PLAYER', True, TEXT_COL, turquoise)
+    text2Rect = text.get_rect()
+    text2Rect.center = (rect_w.center[0]-4, rect_w.center[1])
+
+    screen.blit(text, textRect)
+    screen.blit(text2, text2Rect)
+
+    if other_decision:
+        text_od = 'OPPONENT WANTS TO PLAY AGAIN'
+        draw_text(text_od, FONT, TEXT_COL, 15, 600, screen)
+
+    else:
+        text_od = 'OPPONENT DOES NOT WANT TO PLAY AGAIN'
+        draw_text(text_od, FONT, TEXT_COL, 15, 600, screen)
 
     active = False
     click = False
@@ -127,5 +135,6 @@ def wait_for_decision(
         if click:
             if active:
                 color = white
+
 
 
