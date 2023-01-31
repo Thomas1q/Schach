@@ -24,6 +24,7 @@ class ClientLogic(BaseLogic):
 
         self.decision: bool | None = None
         self.other_decision: bool | None = None
+        self.told_decision: bool = False
 
         self.already: bool = False
 
@@ -34,18 +35,20 @@ class ClientLogic(BaseLogic):
             events = pygame.event.get()
             if self.already:
                 # The other player has not made a decision yet -> start the waiter again
-                if not self.other_decision:
+                if not self.decision_waiter:
                     self.decision_waiter = threading.Thread(target=self.wait_for_decision)
                     try:
                         self.decision_waiter.start()
                     except RuntimeError:
                         pass
                 # Check if the player has already made a decision
-                self.decision = wait_for_decision(self.screen, self.clock, self.log, events, self.other_decision)
-                # TODO: The player has made no decision
+                if not self.decision:
+                    self.decision = wait_for_decision(self.log, events, self.other_decision)
                 # The player has made a decision
                 if self.decision is not None:
-                    self.client.write(pickle.dumps(self.decision))
+                    if not self.told_decision:
+                        self.client.write(pickle.dumps(self.decision))
+                        self.told_decision = True
                     # He wants to play with someone else
                     if self.decision is False:
                         self.enemy_data = None
@@ -57,11 +60,15 @@ class ClientLogic(BaseLogic):
                 if not self.user_data:
                     return
 
-            if (self.user_data and self.decision is True) or (self.already and self.decision is True and self.other_decision is True):
+            if self.decision is True and ((self.user_data and not self.already) or (self.already and self.other_decision is True)):
                 pygame.time.wait(100)
                 self.log = GameLogic.from_client(self)
                 self.log.start_game_loop()
                 self.already = True
+                self.decision = None
+                self.other_decision = None
+
+                self.decision_waiter = None
 
             for event in events:
                 if event.type == pygame.QUIT:

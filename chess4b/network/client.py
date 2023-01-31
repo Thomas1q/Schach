@@ -2,25 +2,25 @@ import asyncio
 import socket
 
 
-class Client:       #Classe mit dem Namen Client
+class Client:
     def __init__(self):
         self.client_conn = None
-        self.address = ("127.0.0.1", 50000)  #Variable Address die IP des Servers geben
+        self.address = ("127.0.0.1", 50000)
         self.server = None
 
-    def client_connect(self):           #Funktion
-
-        self.client_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #Aufsetzen eines Sockets
+    def client_connect(self):
+        self.client_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            self.client_conn.connect(self.address)      #Versucht sich mit dem Server zu verbinden
+            self.client_conn.connect(self.address)
             return True
-        except ConnectionRefusedError:                  #Wenn die Verbindung nicht möglich ist wird diese Aufgerufen
-            return False                                #Verhindert Programmcrash
+        except ConnectionRefusedError:
+            print("HOST HAS TO BE SELECTED FIRST")
+            return False
 
-    def write(self, message: bytes):            #Write Funktion zum Kommunitziern mit den Server
+    def write(self, message: bytes):
         self.client_conn.send(message)
 
-    def recv(self):                             #Read FUnktion um Messages von dem Server zu empfangen
+    def recv(self):
         return self.client_conn.recv(1024)
 
 

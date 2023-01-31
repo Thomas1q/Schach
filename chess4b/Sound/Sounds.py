@@ -1,6 +1,9 @@
 from playsound import playsound
 
+
 def move_sound():
-    playsound("Move.mp3")
+    playsound(r"chess4b/Sound/Move.mp3", False)
+
+
 def sieg_sound():
-    playsound("Sieg.mp3")
+    playsound(r"chess4b/Sound/Sieg.mp3", False)
