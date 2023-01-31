@@ -14,14 +14,18 @@ class ClientLogic(BaseLogic):
     def __init__(self, username: str, screen: pygame.Surface = None, clock: pygame.time.Clock = None):
         self.username = username
 
+        # Initialize the client and the GameLogic
         self.client: Client = Client()
         self.log: GameLogic | None = None
 
+        # Store the user data and the enemy data
         self.user_data: User | None = None
         self.enemy_data: User | None = None
 
+        # Thread to wait for the other player's decision
         self.decision_waiter: threading.Thread | None = None
 
+        # Store the decisions of the player and the other player
         self.decision: bool | None = None
         self.other_decision: bool | None = None
         self.told_decision: bool = False
@@ -60,6 +64,8 @@ class ClientLogic(BaseLogic):
                 if not self.user_data:
                     return
 
+            # Join a new game when you want to start a new game
+            # or if the other player has made a decision
             if self.decision is True and ((self.user_data and not self.already) or (self.already and self.other_decision is True)):
                 pygame.time.wait(100)
                 self.log = GameLogic.from_client(self)
@@ -79,6 +85,7 @@ class ClientLogic(BaseLogic):
             self.clock.tick(60)
 
     def join_server(self):
+        # Join a server and send the username
         conn = self.client.client_connect()
         if conn:
             self.enemy_data = pickle.loads(self.client.recv())
@@ -88,10 +95,12 @@ class ClientLogic(BaseLogic):
         return
 
     def wait_for_decision(self) -> None:
+        # Function that is called in a thread to wait for the other player's decision
         self.other_decision = pickle.loads(self.client.recv())
 
     @classmethod
     def from_selector(cls, obj, username: str):
+        # Create a new GameLogic from the ClientLogic
         pygame.display.set_mode((1200, 800))
         return cls(
             username,

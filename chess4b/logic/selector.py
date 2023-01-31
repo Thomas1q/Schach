@@ -34,6 +34,7 @@ class HostClientSelector(BaseLogic):
         pygame.key.set_repeat(200, 25)
 
     def start_game_loop(self) -> None:
+        # The game loop running until the user closes the window
         while True:
             username, host = username_input(self.screen, self.clock)
             if host:
