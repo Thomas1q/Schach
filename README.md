@@ -1,7 +1,7 @@
 # Simple Chess Game 
 
 ## Maintainer:
-* [Thomas](https://github.com/Thomas1q) > Network
+* [Thomas](https://github.com/Thomas1q) > Network, Sound
 * [Daniel](https://github.com/dpfurners) > Logic
 * [Leon](https://github.com/Delano1q) > GUI
 
