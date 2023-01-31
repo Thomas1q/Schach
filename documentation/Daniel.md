@@ -56,7 +56,7 @@
     Fixing last errors, Making code more readable, Displaying right win text, Remove debugging print statements
     Add requirements.txt to tell a user what he needs to install to run the game
 
-### 31.01.2023
+#### 31.01.2023
     Finishing the documentation -> adding the daily work (according to the commits)
     Adding funcions that should be implemented in the future (not sure if these implementations will be done)
     Writing a short description of the project (README.md)
